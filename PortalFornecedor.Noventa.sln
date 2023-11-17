@@ -1,0 +1,97 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Domain", "1 - Domain", "{F6871D81-4846-4F87-A2EC-042F2FA147A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Infra", "2 - Infra", "{96FD9A93-798D-432E-AD9F-827FE7503801}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Application", "3-Application", "{62DB79B3-AAF4-4072-A65A-BA0EBDF4288F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-WebApi", "4-WebApi", "{A3BE36AB-4336-4E36-AE18-A8D15160B9C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5-Scripts", "5-Scripts", "{A728B6F6-5885-41B2-9943-02159E44D440}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortalFornecedor.Noventa.Domain", "PortalFornecedor.Noventa.Domain\PortalFornecedor.Noventa.Domain.csproj", "{0F231D29-9AFF-4D7F-9A94-436E56886AC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1-CrossCuting", "2.1-CrossCuting", "{3A0F4522-33AC-45ED-8EDA-1DCEFC0E379B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.2-Data", "2.2-Data", "{A062BC32-3660-4025-8B85-11BE383DB269}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortalFornecedor.Noventa.Ioc", "PortalFornecedor.Noventa.Ioc\PortalFornecedor.Noventa.Ioc.csproj", "{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortalFornecedor.Noventa.Data", "PortalFornecedor.Noventa.Data\PortalFornecedor.Noventa.Data.csproj", "{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortalFornecedor.Noventa.Application", "PortalFornecedor.Noventa.Application\PortalFornecedor.Noventa.Application.csproj", "{518724D2-E759-477D-9791-40BF64CCCF65}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortalFornecedor.Noventa.API", "PortalFornecedor.Noventa.API\PortalFornecedor.Noventa.API.csproj", "{8961377A-FBCE-49EB-843E-B0CF4B35312B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - ScriptsBancoDados", "5 - ScriptsBancoDados", "{FD3B77A9-D656-47F5-B7B8-3CB4F215805A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tabelas", "Tabelas", "{DD02ECB4-6BAB-411C-80DE-CA00B58A5B57}"
+	ProjectSection(SolutionItems) = preProject
+		01-Estado.sql = 01-Estado.sql
+		02-Login.sql = 02-Login.sql
+		03 - Fornecedor.sql = 03 - Fornecedor.sql
+		04 - Status.sql = 04 - Status.sql
+		05 - Motivo.sql = 05 - Motivo.sql
+		06 - Frete.sql = 06 - Frete.sql
+		07 - Condicao_Pagamento.sql = 07 - Condicao_Pagamento.sql
+		08- Cotacao_Status.sql = 08- Cotacao_Status.sql
+		09 - Cotacao_Motivo.sql = 09 - Cotacao_Motivo.sql
+		10 - Cotacao_Frete.sql = 10 - Cotacao_Frete.sql
+		11- Cotacao_Status_Pagamento.sql = 11- Cotacao_Status_Pagamento.sql
+		12 - Cotacao_Dados_Solicitante.sql = 12 - Cotacao_Dados_Solicitante.sql
+		13 - Outras_Despesas.sql = 13 - Outras_Despesas.sql
+		14- Cotacao.sql = 14- Cotacao.sql
+		15- Material_Cotacao.sql = 15- Material_Cotacao.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoredProcedure", "StoredProcedure", "{E1837766-BEAE-4819-A29A-D4F7B659E31C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F231D29-9AFF-4D7F-9A94-436E56886AC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F231D29-9AFF-4D7F-9A94-436E56886AC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F231D29-9AFF-4D7F-9A94-436E56886AC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F231D29-9AFF-4D7F-9A94-436E56886AC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518724D2-E759-477D-9791-40BF64CCCF65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518724D2-E759-477D-9791-40BF64CCCF65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518724D2-E759-477D-9791-40BF64CCCF65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518724D2-E759-477D-9791-40BF64CCCF65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8961377A-FBCE-49EB-843E-B0CF4B35312B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8961377A-FBCE-49EB-843E-B0CF4B35312B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8961377A-FBCE-49EB-843E-B0CF4B35312B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8961377A-FBCE-49EB-843E-B0CF4B35312B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0F231D29-9AFF-4D7F-9A94-436E56886AC1} = {F6871D81-4846-4F87-A2EC-042F2FA147A4}
+		{3A0F4522-33AC-45ED-8EDA-1DCEFC0E379B} = {96FD9A93-798D-432E-AD9F-827FE7503801}
+		{A062BC32-3660-4025-8B85-11BE383DB269} = {96FD9A93-798D-432E-AD9F-827FE7503801}
+		{3DCBC2B9-E2BE-4737-ACCC-4129FF5AC14D} = {3A0F4522-33AC-45ED-8EDA-1DCEFC0E379B}
+		{3105D7B5-9CF6-4FE0-A6D1-43639DDBB09A} = {A062BC32-3660-4025-8B85-11BE383DB269}
+		{518724D2-E759-477D-9791-40BF64CCCF65} = {62DB79B3-AAF4-4072-A65A-BA0EBDF4288F}
+		{8961377A-FBCE-49EB-843E-B0CF4B35312B} = {A3BE36AB-4336-4E36-AE18-A8D15160B9C9}
+		{DD02ECB4-6BAB-411C-80DE-CA00B58A5B57} = {FD3B77A9-D656-47F5-B7B8-3CB4F215805A}
+		{E1837766-BEAE-4819-A29A-D4F7B659E31C} = {FD3B77A9-D656-47F5-B7B8-3CB4F215805A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC61E4F9-1A32-4EC9-9414-9584B1947AFE}
+	EndGlobalSection
+EndGlobal

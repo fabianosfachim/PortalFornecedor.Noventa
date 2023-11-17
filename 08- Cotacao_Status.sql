@@ -1,0 +1,36 @@
+/****** Object:  Table [dbo].[cotacao_status]    Script Date: 11/3/2023 5:59:58 PM ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[cotacao_status]') AND type in (N'U'))
+DROP TABLE [dbo].[cotacao_status]
+GO
+
+/****** Object:  Table [dbo].[cotacao_status]    Script Date: 11/3/2023 5:59:58 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[cotacao_status](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[IdCotacao] [varchar](40) NOT NULL,
+	[IdStatus] [int] NOT NULL,
+	[DataStatus] [datetime] NOT NULL,
+ CONSTRAINT [PK_cotacao_status_1] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_STATUS] ON [dbo].[cotacao_status]
+(
+	[IdStatus] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_COTACAO]    Script Date: 11/3/2023 6:06:30 PM ******/
+CREATE NONCLUSTERED INDEX [IX_COTACAO] ON [dbo].[cotacao_status]
+(
+	[IdCotacao] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
