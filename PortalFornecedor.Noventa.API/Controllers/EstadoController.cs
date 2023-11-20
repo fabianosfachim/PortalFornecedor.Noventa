@@ -23,12 +23,25 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ListarEstadoAsync()
         {
-
-            var response = await _estadoServices.ListarEstadoAsync();
-
             HttpContext.Response.ContentType = "application/json";
 
-            return Ok(response);
+            try
+            {
+                var response = await _estadoServices.ListarEstadoAsync();
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.Estados);
+                } else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
    
