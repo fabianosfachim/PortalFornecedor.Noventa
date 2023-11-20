@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using PortalFornecedor.Noventa.Application;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
 using PortalFornecedor.Noventa.Domain.Model;
 
@@ -10,6 +12,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
     public class FornecedorController : ControllerBase
     {
         private readonly IFornecedorServices _fornecedorServices;
+
         public FornecedorController(IFornecedorServices fornecedorServices)
         {
             _fornecedorServices = fornecedorServices;
@@ -25,12 +28,26 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest)
         {
+            try
+            {
+                HttpContext.Response.ContentType = "application/json";
 
-            var response = await _fornecedorServices.AdicionarFornecedorAsync(fornecedorRequest);
+                var response = await _fornecedorServices.AdicionarFornecedorAsync(fornecedorRequest);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.MensagemRetorno);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -38,17 +55,32 @@ namespace PortalFornecedor.Noventa.API.Controllers
         /// </summary>
         /// <param name="fornecedorRequest">Objeto para cadastro dos dados do fornecedor no portal</param>
         /// <returns>Retornar se os dados do fornecedor foram atualizados ou não no portal</returns>
-        [HttpPost]
+        [HttpPut]
         [Route("AtualizarCadastroFornecedor")]
         [AllowAnonymous]
         public async Task<IActionResult> AtualizarDadosFornecedorAsync(FornecedorRequest fornecedorRequest)
         {
-
-            var response = await _fornecedorServices.AtualizarDadosFornecedorAsync(fornecedorRequest);
-
             HttpContext.Response.ContentType = "application/json";
 
-            return Ok(response);
+            try
+            {
+                var response = await _fornecedorServices.AtualizarDadosFornecedorAsync(fornecedorRequest);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.MensagemRetorno);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+            }
+            catch (Exception ex) 
+            { 
+                return StatusCode(500, ex.Message);
+            }
+            
+            
         }
 
         /// <summary>
@@ -56,17 +88,30 @@ namespace PortalFornecedor.Noventa.API.Controllers
         /// </summary>
         /// <param name="id">Id do cadastro do fornecedor</param>
         /// <returns>Retornar se os dados do fornecedor foram atualizados ou não no portal</returns>
-        [HttpPost]
+        [HttpDelete]
         [Route("ExclusaoCadastroFornecedor")]
         [AllowAnonymous]
         public async Task<IActionResult> ExcluirDadosFornecedorAsync(int id)
         {
-
-            var response = await _fornecedorServices.ExcluirDadosFornecedorAsync(id);
-
             HttpContext.Response.ContentType = "application/json";
 
-            return Ok(response);
+            try
+            {
+                var response = await _fornecedorServices.ExcluirDadosFornecedorAsync(id);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.MensagemRetorno);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }           
         }
 
 
@@ -80,11 +125,27 @@ namespace PortalFornecedor.Noventa.API.Controllers
         public async Task<IActionResult> ListarDadosFornecedorAsync()
         {
 
-            var response = await _fornecedorServices.ListarDadosFornecedorAsync();
-
             HttpContext.Response.ContentType = "application/json";
 
-            return Ok(response);
+            try
+            {
+                var response = await _fornecedorServices.ListarDadosFornecedorAsync();
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.fornecedor);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            
         }
 
 
@@ -98,12 +159,26 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ListarDadosFornecedor(int id)
         {
-
-            var response = await _fornecedorServices.ListarDadosFornecedorAsync(id);
-
             HttpContext.Response.ContentType = "application/json";
 
-            return Ok(response);
+            try
+            {
+                var response = await _fornecedorServices.ListarDadosFornecedorAsync(id);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.fornecedor);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

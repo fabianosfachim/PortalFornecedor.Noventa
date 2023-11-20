@@ -23,8 +23,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(AdicionarFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
@@ -50,16 +49,7 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                 $"{nameof(AdicionarFornecedorAsync)}  " +
                "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                  $"{nameof(AdicionarFornecedorAsync)}   " +
-                  " Com o erro = " + ex.Message);
-
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Tente realizar o cadastro novamente";
-            }
+            
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"Cadastro Dados Fornecedor.");
         }
@@ -68,8 +58,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(AtualizarDadosFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
@@ -85,16 +74,7 @@ namespace PortalFornecedor.Noventa.Application
                 fornecedorResponse.fornecedor = fornecedorRequest.fornecedor;
                 fornecedorResponse.Executado = true;
                 fornecedorResponse.MensagemRetorno = "Dados do Cadastro do Fornecedor alterado com sucesso";
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                  $"{nameof(AtualizarDadosFornecedorAsync)}   " +
-                  " Com o erro = " + ex.Message);
-
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Tente realizar a alteração de cadastro novamente";
-            }
+            
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"AtualizarDadosFornecedorAsync Dados Fornecedor.");
         }
@@ -103,8 +83,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(ExcluirDadosFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {id}", id);
@@ -117,16 +96,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 fornecedorResponse.Executado = true;
                 fornecedorResponse.MensagemRetorno = "Dados do Cadastro do Fornecedor excluído com sucesso";
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                  $"{nameof(ExcluirDadosFornecedorAsync)}   " +
-                  " Com o erro = " + ex.Message);
-
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Tente realizar a exclusão do cadastro novamente";
-            }
+            
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"ExcluirDadosFornecedorAsync Dados Fornecedor.");
         }
@@ -135,8 +105,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            try
-            {
+            
                 var listaDadosFornecedor = await _fornecedorRepository.GetAllAsync();
 
                 if (listaDadosFornecedor.Any())
@@ -150,12 +119,7 @@ namespace PortalFornecedor.Noventa.Application
                     fornecedorResponse.Executado = false;
                     fornecedorResponse.MensagemRetorno = "Não existem cadastrado no sistema";
                 }
-            }
-            catch
-            {
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Tente realizar a consulta novamente";
-            }
+           
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"ListarDadosFornecedorAsync Dados Fornecedor.");
         }
@@ -164,8 +128,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                   $"{nameof(ListarDadosFornecedorAsync)}  " +
                  "com os seguintes parâmetros: {id}", id);
@@ -187,16 +150,7 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                   $"{nameof(ListarDadosFornecedorAsync)}  " +
                  "com os seguintes parâmetros: {id}", id);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                 $"{nameof(ListarDadosFornecedorAsync)}   " +
-                 " Com o erro = " + ex.Message);
-
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Tente realizar a consulta novamente";
-            }
+            
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"ListarDadosFornecedorAsync Dados Fornecedor.");
         }
@@ -206,8 +160,7 @@ namespace PortalFornecedor.Noventa.Application
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                 $"{nameof(ListarDadosFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {cnpj}", cnpj);
@@ -229,16 +182,7 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                  $"{nameof(ListarDadosFornecedorAsync)}  " +
                  "com os seguintes parâmetros: {cnpj}", cnpj);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                 $"{nameof(ListarDadosFornecedorAsync)}   " +
-                 " Com o erro = " + ex.Message);
-
-                fornecedorResponse.Executado = false;
-                fornecedorResponse.MensagemRetorno = "Não foi possível encontrar o fornecedor!";
-            }
+            
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"Dados Acesso.");
         }

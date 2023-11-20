@@ -24,8 +24,6 @@ namespace PortalFornecedor.Noventa.Application
         {
             LoginResponse loginResponse = new LoginResponse();
 
-            try
-            {
                 _logger.LogInformation("Iniciando o método   " +
                 $"{nameof(CadastrarLoginSistemaAsync)}  " +
                 "com os seguintes parâmetros: {loginRequest}", loginRequest);
@@ -57,16 +55,7 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                $"{nameof(CadastrarLoginSistemaAsync)}  " +
                "com os seguintes parâmetros: {loginRequest}", loginRequest);
-            }
-            catch(Exception ex) 
-            {
-                _logger.LogError("Erro na execução do método " +
-                 $"{nameof(CadastrarLoginSistemaAsync)}   " +
-                 " Com o erro = " + ex.Message);
-
-                loginResponse.Executado = false;
-                loginResponse.MensagemRetorno = "Tente realizar o cadastro novamente";
-            }
+            
 
             return new Response<LoginResponse>(loginResponse, $"Cadastro Login Usuário.");
         }
@@ -77,8 +66,6 @@ namespace PortalFornecedor.Noventa.Application
 
             var password = Utils.Criptografar(loginRequest.Password);
 
-            try
-            {
                 _logger.LogInformation("Iniciando o método   " +
                   $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
                 "com os seguintes parâmetros: {loginRequest}", loginRequest);
@@ -107,16 +94,7 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                  $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
                  "com os seguintes parâmetros: {loginRequest}", loginRequest);
-            }
-            catch(Exception ex) 
-            {
-                _logger.LogError("Erro na execução do método " +
-                $"{nameof(AtualizarCadastroLoginSistemaAsync)}   " +
-                " Com o erro = " + ex.Message);
-
-                loginResponse.Executado = false;
-                loginResponse.MensagemRetorno = "Tente realizar a atualização do cadastro";
-            }
+            
            
 
             return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
@@ -126,8 +104,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             LoginResponse loginResponse = new LoginResponse();
 
-            try
-            {
+           
                 _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(DesativarCadastroLoginSistemaAsync)}  " +
                "com os seguintes parâmetros: {idLogin}", idLogin);
@@ -157,16 +134,6 @@ namespace PortalFornecedor.Noventa.Application
                 $"{nameof(DesativarCadastroLoginSistemaAsync)}  " +
                 "com os seguintes parâmetros: {idLogin}", idLogin);
 
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-               $"{nameof(DesativarCadastroLoginSistemaAsync)}   " +
-               " Com o erro = " + ex.Message);
-
-                loginResponse.Executado = false;
-                loginResponse.MensagemRetorno = "Tente realizar a atualização do cadastro";
-            }
 
 
             return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
@@ -228,46 +195,35 @@ namespace PortalFornecedor.Noventa.Application
         {
             LoginResponse loginResponse = new LoginResponse();
            
-            try
+
+            _logger.LogInformation("Iniciando o método   " +
+                $"{nameof(LoginSistemaAsync)}  " +
+            "com os seguintes parâmetros: {loginRequest}", loginRequest);
+
+            loginRequest.Email = loginRequest.Email;
+            loginRequest.Password = Utils.Criptografar(loginRequest.Password);
+
+            var dadosAcesso = _loginRepository.Get(x => x.Email == loginRequest.Email
+                                            && x.Password == loginRequest.Password
+                                            && x.Ativo == true).FirstOrDefault();
+
+            if (dadosAcesso != null)
             {
+                Login dadosAcessoUsuario = await BuscarDadosUsuario(dadosAcesso.Id);
 
-                _logger.LogInformation("Iniciando o método   " +
-                 $"{nameof(LoginSistemaAsync)}  " +
-               "com os seguintes parâmetros: {loginRequest}", loginRequest);
+                dadosAcessoUsuario.DataUltimaSessaoAtivaUsuario = DateTime.Now;
+                await _loginRepository.UpdateAsync(dadosAcessoUsuario);
 
-                loginRequest.Email = loginRequest.Email;
-                loginRequest.Password = Utils.Criptografar(loginRequest.Password);
-
-                var dadosAcesso = _loginRepository.Get(x => x.Email == loginRequest.Email
-                                               && x.Password == loginRequest.Password
-                                               && x.Ativo == true).FirstOrDefault();
-
-                if (dadosAcesso != null)
-                {
-                    Login dadosAcessoUsuario = await BuscarDadosUsuario(dadosAcesso.Id);
-
-                    dadosAcessoUsuario.DataUltimaSessaoAtivaUsuario = DateTime.Now;
-                    await _loginRepository.UpdateAsync(dadosAcessoUsuario);
-
-                    loginResponse.login = dadosAcessoUsuario;
-                    loginResponse.Executado = true;
-                    loginResponse.MensagemRetorno = "Login efetuado com sucesso";
-                }
-                else
-                {
-                    loginResponse.Executado = false;
-                    loginResponse.MensagemRetorno = "Dados incorretos, tente novamente!";
-                }
+                loginResponse.login = dadosAcessoUsuario;
+                loginResponse.Executado = true;
+                loginResponse.MensagemRetorno = "Login efetuado com sucesso";
             }
-            catch(Exception ex)
+            else
             {
-                _logger.LogError("Erro na execução do método " +
-                $"{nameof(LoginSistemaAsync)}   " +
-                " Com o erro = " + ex.Message);
-
                 loginResponse.Executado = false;
                 loginResponse.MensagemRetorno = "Dados incorretos, tente novamente!";
             }
+            
 
             _logger.LogInformation("Finalizando o método   " +
                 $"{nameof(LoginSistemaAsync)}  " +
@@ -280,8 +236,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             LoginResponse loginResponse = new LoginResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(RecuperarDadosAcessoAsync)}  " +
                  "com os seguintes parâmetros: {email}", email);
@@ -305,16 +260,6 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                 $"{nameof(RecuperarDadosAcessoAsync)}  " +
                 "com os seguintes parâmetros: {email}", email);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                $"{nameof(RecuperarDadosAcessoAsync)}   " +
-                 " Com o erro = " + ex.Message);
-
-                loginResponse.Executado = false;
-                loginResponse.MensagemRetorno = "Não foi possível enviar os dados de acesso!";
-            }
 
             return new Response<LoginResponse>(loginResponse, $"Dados Acesso.");
         }

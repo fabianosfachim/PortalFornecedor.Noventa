@@ -23,8 +23,7 @@ namespace PortalFornecedor.Noventa.Application
         {
             EstadoResponse estadoResponse = new EstadoResponse();
 
-            try
-            {
+            
                 _logger.LogInformation("Iniciando o método   " + 
                     $"{nameof(ListarEstadoAsync)}   ");
                    
@@ -36,16 +35,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 _logger.LogInformation("Finalizando o método   " +
                     $"{nameof(ListarEstadoAsync)}   ");
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                    $"{nameof(ListarEstadoAsync)}   " +
-                    " Com o erro = " + ex.Message);
-
-                estadoResponse.Executado = false;
-                estadoResponse.MensagemRetorno = "Erro na consulta de lista de estados";
-            }
+            
 
             return new Response<EstadoResponse>(estadoResponse, $"Lista Estados.");
         }
