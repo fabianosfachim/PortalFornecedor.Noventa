@@ -33,7 +33,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 if(!verificaDadosFornecedor.Any())
                 {
-                    fornecedorRequest.fornecedor.CNPJ = fornecedorRequest.fornecedor.CNPJ.Replace(".", "").Replace("-", "").Replace("/", "");
+                    fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
                     await _fornecedorRepository.AddAsync(fornecedorRequest.fornecedor);
 
                     fornecedorResponse.fornecedor = fornecedorRequest.fornecedor;
@@ -63,7 +63,7 @@ namespace PortalFornecedor.Noventa.Application
                  $"{nameof(AtualizarDadosFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
                 
-                fornecedorRequest.fornecedor.CNPJ = fornecedorRequest.fornecedor.CNPJ.Replace(".", "").Replace("-", "").Replace("/", "");
+                fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
 
                 await _fornecedorRepository.UpdateAsync(fornecedorRequest.fornecedor);
 
@@ -155,17 +155,17 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<FornecedorResponse>(fornecedorResponse, $"ListarDadosFornecedorAsync Dados Fornecedor.");
         }
 
-        public async Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync(string cnpj)
+        public async Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync(string CnpjCpf)
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
-            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
+            CnpjCpf = CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
 
             
                 _logger.LogInformation("Iniciando o método   " +
                 $"{nameof(ListarDadosFornecedorAsync)}  " +
-                "com os seguintes parâmetros: {cnpj}", cnpj);
+                "com os seguintes parâmetros: {CnpjCpf}", CnpjCpf);
 
-                var dadosAcesso =  _fornecedorRepository.Get(x => x.CNPJ == cnpj).FirstOrDefault();
+                var dadosAcesso =  _fornecedorRepository.Get(x => x.CnpjCpf == CnpjCpf).FirstOrDefault();
 
                 if (dadosAcesso != null)
                 {
@@ -181,7 +181,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 _logger.LogInformation("Finalizando o método   " +
                  $"{nameof(ListarDadosFornecedorAsync)}  " +
-                 "com os seguintes parâmetros: {cnpj}", cnpj);
+                 "com os seguintes parâmetros: {CnpjCpf}", CnpjCpf);
             
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"Dados Acesso.");

@@ -45,6 +45,6 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// </summary>
         /// <param name="id">Número de identificação do fornecedor</param>
         /// <returns></returns>
-        Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync(string cnpj);
+        Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync(string CnpjCpf);
     }
 }

@@ -148,10 +148,10 @@ namespace PortalFornecedor.Noventa.Application
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.Executado = true;
 
-            if (loginRequest.Password.Length < 6 || loginRequest.Password.Length > 12)
+            if (loginRequest.Password.Length < 6 || loginRequest.Password.Length > 20)
             {
                 loginResponse.Executado = true;
-                loginResponse.MensagemRetorno = "A password deve conter entre 6 e 12 caracteres.";
+                loginResponse.MensagemRetorno = "A password deve conter entre 6 e 20 caracteres.";
             }
 
             if (!loginRequest.Password.Any(c => char.IsDigit(c)))
@@ -311,7 +311,7 @@ namespace PortalFornecedor.Noventa.Application
             login.DataCadastro = DateTime.Now;
             login.NomeUsuarioAlteracao = loginRequest.Nome;
             login.DataAlteracaoCadastro = DateTime.Now;
-            login.Ativo = true;
+            login.Ativo = false;
             login.DataUltimaSessaoAtivaUsuario = DateTime.Now;
 
             return login;
