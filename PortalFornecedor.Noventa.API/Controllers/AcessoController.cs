@@ -183,5 +183,35 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualizar o cadastro da senha do usuário
+        /// </summary>
+        /// <param name="loginRequest">Objeto de login</param>
+        /// <returns>Atualizar o cadastro da senha do fornecedor no portal</returns>
+        [HttpPost]
+        [Route("AtualizarPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync([FromBody] LoginRequest loginRequest)
+        {
+            try
+            {
+                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(loginRequest);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.fornecedor);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }
