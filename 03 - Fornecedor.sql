@@ -5,7 +5,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[forne
 DROP TABLE [dbo].[fornecedor]
 GO
 
-/****** Object:  Table [dbo].[fornecedor]    Script Date: 11/22/2023 9:50:46 AM ******/
+/****** Object:  Table [dbo].[fornecedor]    Script Date: 11/30/2023 11:03:30 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[fornecedor](
 	[Id] [int] NOT NULL,
 	[CnpjCpf] [varchar](14) NOT NULL,
 	[RazaoSocial] [varchar](100) NOT NULL,
-	[CEP] [varchar](8) NOT NULL,
+	[CEP] [varchar](15) NOT NULL,
 	[Logradouro] [varchar](100) NOT NULL,
 	[Numero] [varchar](5) NOT NULL,
 	[Complemento] [varchar](50) NULL,

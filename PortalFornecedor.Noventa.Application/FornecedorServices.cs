@@ -54,103 +54,33 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<FornecedorResponse>(fornecedorResponse, $"Cadastro Dados Fornecedor.");
         }
 
-        public async Task<Response<FornecedorResponse>> AtualizarDadosFornecedorAsync(FornecedorRequest fornecedorRequest)
-        {
-            FornecedorResponse fornecedorResponse = new FornecedorResponse();
-
-            
-                _logger.LogInformation("Iniciando o método   " +
-                 $"{nameof(AtualizarDadosFornecedorAsync)}  " +
-                "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
-                
-                fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
-
-                await _fornecedorRepository.UpdateAsync(fornecedorRequest.fornecedor);
-
-                _logger.LogInformation("Finalizando o método   " +
-                 $"{nameof(AtualizarDadosFornecedorAsync)}  " +
-                "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
-
-                fornecedorResponse.fornecedor = fornecedorRequest.fornecedor;
-                fornecedorResponse.Executado = true;
-                fornecedorResponse.MensagemRetorno = "Dados do Cadastro do Fornecedor alterado com sucesso";
-            
-
-            return new Response<FornecedorResponse>(fornecedorResponse, $"AtualizarDadosFornecedorAsync Dados Fornecedor.");
-        }
-
-        public async Task<Response<FornecedorResponse>> ExcluirDadosFornecedorAsync(int id)
-        {
-            FornecedorResponse fornecedorResponse = new FornecedorResponse();
-
-            
-                _logger.LogInformation("Iniciando o método   " +
-                 $"{nameof(ExcluirDadosFornecedorAsync)}  " +
-                "com os seguintes parâmetros: {id}", id);
-
-                await _fornecedorRepository.RemoveAsync(id);
-
-                _logger.LogInformation("Finalizando o método   " +
-                 $"{nameof(ExcluirDadosFornecedorAsync)}  " +
-                "com os seguintes parâmetros: {id}", id);
-
-                fornecedorResponse.Executado = true;
-                fornecedorResponse.MensagemRetorno = "Dados do Cadastro do Fornecedor excluído com sucesso";
-            
-
-            return new Response<FornecedorResponse>(fornecedorResponse, $"ExcluirDadosFornecedorAsync Dados Fornecedor.");
-        }
-
-        public async Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync()
-        {
-            FornecedorResponse fornecedorResponse = new FornecedorResponse();
-
-            
-                var listaDadosFornecedor = await _fornecedorRepository.GetAllAsync();
-
-                if (listaDadosFornecedor.Any())
-                {
-                    fornecedorResponse.listaFornecedor = listaDadosFornecedor.ToList();
-                    fornecedorResponse.Executado = true;
-                    fornecedorResponse.MensagemRetorno = "Consulta do dados de fornecedor efetuado com sucesso";
-                }
-                else
-                {
-                    fornecedorResponse.Executado = false;
-                    fornecedorResponse.MensagemRetorno = "Não existem cadastrado no sistema";
-                }
-           
-
-            return new Response<FornecedorResponse>(fornecedorResponse, $"ListarDadosFornecedorAsync Dados Fornecedor.");
-        }
-
         public async Task<Response<FornecedorResponse>> ListarDadosFornecedorAsync(int id)
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            
-                _logger.LogInformation("Iniciando o método   " +
-                  $"{nameof(ListarDadosFornecedorAsync)}  " +
-                 "com os seguintes parâmetros: {id}", id);
 
-                var dadosFornecedor = _fornecedorRepository.GetAsync(x => x.Id == id).Result.FirstOrDefault();
+            _logger.LogInformation("Iniciando o método   " +
+              $"{nameof(ListarDadosFornecedorAsync)}  " +
+             "com os seguintes parâmetros: {id}", id);
 
-                if (dadosFornecedor != null)
-                {
-                    fornecedorResponse.fornecedor = dadosFornecedor;
-                    fornecedorResponse.Executado = true;
-                    fornecedorResponse.MensagemRetorno = "Consulta do dados de fornecedor efetuado com sucesso";
-                }
-                else
-                {
-                    fornecedorResponse.Executado = false;
-                    fornecedorResponse.MensagemRetorno = "Não existem cadastrado no sistema";
-                }
+            var dadosFornecedor = _fornecedorRepository.GetAsync(x => x.Id == id).Result.FirstOrDefault();
 
-                _logger.LogInformation("Finalizando o método   " +
-                  $"{nameof(ListarDadosFornecedorAsync)}  " +
-                 "com os seguintes parâmetros: {id}", id);
-            
+            if (dadosFornecedor != null)
+            {
+                fornecedorResponse.fornecedor = dadosFornecedor;
+                fornecedorResponse.Executado = true;
+                fornecedorResponse.MensagemRetorno = "Consulta do dados de fornecedor efetuado com sucesso";
+            }
+            else
+            {
+                fornecedorResponse.Executado = false;
+                fornecedorResponse.MensagemRetorno = "Não existem cadastrado no sistema";
+            }
+
+            _logger.LogInformation("Finalizando o método   " +
+              $"{nameof(ListarDadosFornecedorAsync)}  " +
+             "com os seguintes parâmetros: {id}", id);
+
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"ListarDadosFornecedorAsync Dados Fornecedor.");
         }

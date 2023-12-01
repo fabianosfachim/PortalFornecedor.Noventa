@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortalFornecedor.Noventa.Application;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
 using PortalFornecedor.Noventa.Domain.DTO;
-using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 
 namespace PortalFornecedor.Noventa.API.Controllers
@@ -41,13 +39,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 if (response.Data.Executado)
                 {
                     return Ok(response.Data.MensagemRetorno);
-                } 
+                }
                 else
                 {
                     return BadRequest(response.Data.MensagemRetorno);
                 }
-                
-            } catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -61,7 +60,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("CadastroAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> CadastrarLoginSistemaAsync(LoginRequest loginRequest)
+        public async Task<IActionResult> CadastrarLoginSistemaAsync([FromBody] LoginRequest loginRequest)
         {
             HttpContext.Response.ContentType = "application/json";
 
@@ -87,52 +86,18 @@ namespace PortalFornecedor.Noventa.API.Controllers
         }
 
         /// <summary>
-        /// Atualizar os dados do Cadastro do login do Fornecedor no Portal
-        /// </summary>
-        /// <param name="loginRequest">Objeto para receber os dados necessários para atualização do cadastro do fornecedor</param>
-        /// <returns>Retornar se o login do fornecedor foi atualizado o cadastro no portal</returns>
-        [HttpPut]
-        [Route("AlteracaoSenha")]
-        [AllowAnonymous]
-        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync(LoginRequest loginRequest)
-        {
-            HttpContext.Response.ContentType = "application/json";
-
-            try
-            {
-                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(loginRequest);
-
-                if (response.Data.Executado)
-                {
-                    return Ok(response.Data.login);
-                }
-                else
-                {
-                    return BadRequest(response.Data.MensagemRetorno);
-                }
-
-                
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-            
-        }
-
-        /// <summary>
-        /// Desativar o cadastro de acesso de um fornecedor na aplicação
+        /// Ativar o cadastro de acesso de um fornecedor na aplicação
         /// </summary>
         /// <param name="idLogin">Identificador do login do cadastro do fornecedor</param>
         /// <returns>Retornar a desativação do cadastro do fornecedor</returns>
-        [HttpDelete]
-        [Route("DesativarAcesso")]
+        [HttpPost]
+        [Route("AtivarAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> DesativarCadastroLoginSistemaAsync(int idLogin)
+        public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(int idUsuario)
         {
             try
             {
-                var response = await _loginServices.DesativarCadastroLoginSistemaAsync(idLogin);
+                var response = await _loginServices.AtivarCadastroLoginSistemaAsync(idUsuario);
 
                 if (response.Data.Executado)
                 {
@@ -150,7 +115,6 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
         }
 
-
         /// <summary>
         /// Verificar se os dados do fornecedor são válidos para fazer login na aplicação
         /// </summary>
@@ -159,7 +123,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("AutenticarAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginSistemaAsync([FromBody]LoginDto login)
+        public async Task<IActionResult> LoginSistemaAsync([FromBody] LoginDto login)
         {
             HttpContext.Response.ContentType = "application/json";
 
@@ -179,33 +143,33 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 {
                     return BadRequest(response.Data.MensagemRetorno);
                 }
-                
-            } 
+
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            
+
         }
 
 
         /// <summary>
         /// Recuperar a senha de acesso do fornecedor ao portal caso o mesmo tenha esquecido
         /// </summary>
-        /// <param name="email">Email do fornecedor para recuperação da senha</param>
+        /// <param name="CnpjCpf">Documento do fornecedor para recuperação da senha</param>
         /// <returns>Retornar a senha de acesso do fornecedor no portal</returns>
         [HttpPost]
         [Route("RecuperarAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> RecuperarDadosAcessoAsync(string email)
+        public async Task<IActionResult> RecuperarDadosAcessoAsync(string CnpjCpf)
         {
             try
             {
-                var response = await _loginServices.RecuperarDadosAcessoAsync(email);
+                var response = await _loginServices.RecuperarDadosAcessoAsync(CnpjCpf);
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.MensagemRetorno);
+                    return Ok(response.Data.fornecedor);
                 }
                 else
                 {
