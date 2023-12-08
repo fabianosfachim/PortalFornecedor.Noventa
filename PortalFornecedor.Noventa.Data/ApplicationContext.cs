@@ -25,7 +25,6 @@ namespace PortalFornecedor.Noventa.Data
         public DbSet<Cotacao_Dados_Solicitante> Cotacao_Dados_Solicitante { get; set; }
         public DbSet<Condicao_Pagamento> Condicao_Pagamento { get; set; }
         public DbSet<Frete> Frete { get; set; }
-        public DbSet<Outras_Despesas> Outras_Despesas { get; set; }
         public DbSet<Cotacao> Cotacao { get; set; }
         public DbSet<Material_Cotacao> Material_Cotacao { get; set; }
 

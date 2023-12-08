@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
+using PortalFornecedor.Noventa.Application.Services.Util;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Data.Interfaces;
+using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 
 namespace PortalFornecedor.Noventa.Application
@@ -11,20 +13,29 @@ namespace PortalFornecedor.Noventa.Application
 
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly ILogger<FornecedorServices> _logger;
+        private readonly ILoginRepository _loginRepository;
 
         public FornecedorServices(IFornecedorRepository fornecedorRepository,
-                                  ILogger<FornecedorServices> logger)
+                                  ILogger<FornecedorServices> logger,
+                                  ILoginRepository loginRepository)
         {
             _fornecedorRepository = fornecedorRepository;
             _logger = logger;
+            _loginRepository = loginRepository;
         }
 
         public async Task<Response<FornecedorResponse>> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest)
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
 
-            
-                _logger.LogInformation("Iniciando o método   " +
+            var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
+
+            var htmlmessage = WriteMessageAtivacao();
+            htmlmessage = htmlmessage.Replace("@nome", fornecedorRequest.fornecedor.RazaoSocial).Replace("@link", "#linkdaativacao");
+
+            Utils.EnviarEmail(dadosAcessoUsuario.Email, "Ativacao de Senha", htmlmessage, true, null, null);
+
+            _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(AdicionarFornecedorAsync)}  " +
                 "com os seguintes parâmetros: {fornecedorRequest}", fornecedorRequest);
 
@@ -115,6 +126,12 @@ namespace PortalFornecedor.Noventa.Application
             
 
             return new Response<FornecedorResponse>(fornecedorResponse, $"Dados Acesso.");
+        }
+
+        private string WriteMessageAtivacao()
+        {
+            string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\ativacao.html"));
+            return html;
         }
     }
 }

@@ -21,7 +21,7 @@ CREATE TABLE [dbo].[cotacao](
 	[DataPostagem] [datetime] NULL,
 	[CondicoesPagamento_Id] [int]  NULL,
 	[Frete_Id] [int]  NULL,
-	[OutrasDespesas_Id] [int] NULL,
+	[OutrasDespesas] [decimal](19, 2) NULL,
     [ValorFrete] [decimal](19, 2) NULL,
 	[ValorFreteForaNota] [decimal](19, 2) NULL,
 	[ValorSeguro] [decimal](19, 2) NULL,

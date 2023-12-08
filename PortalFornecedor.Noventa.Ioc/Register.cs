@@ -27,7 +27,6 @@ namespace PortalFornecedor.Noventa.Ioc
             services.AddTransient<ICotacaoDadosSolicitanteRepository, CotacaoDadosSolicitanteRepository>();
             services.AddTransient<ICondicaoPagamentoServices, CondicaoPagamentoServices>();
             services.AddTransient<IfreteServices, FreteServices>();
-            services.AddTransient<IOutrasDespesasServices, OutrasDespesasServices>();
             services.AddTransient<ICotacaoServices, CotacaoServices>();
 
             //Repository//
@@ -44,7 +43,6 @@ namespace PortalFornecedor.Noventa.Ioc
             services.AddTransient<ICotacaoDadosSolicitanteServices, CotacaoDadosSolicitanteServices>();
             services.AddTransient<ICondicaoPagamentoRepository, CondicaoPagamentoRepository>();
             services.AddTransient<IFreteRepository, FreteRepository>();
-            services.AddTransient<IOutrasDespesasRepository, OutrasDespesasRepository>();
             services.AddTransient<ICotacaoRepository, CotacaoRepository>();
             services.AddTransient<IMaterialCotacaoRepository, MaterialCotacaoRepository>();
             #endregion
