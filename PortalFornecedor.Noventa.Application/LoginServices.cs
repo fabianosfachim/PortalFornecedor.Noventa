@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
 using PortalFornecedor.Noventa.Application.Services.Util;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
@@ -15,18 +14,22 @@ namespace PortalFornecedor.Noventa.Application
         private readonly ILoginRepository _loginRepository;
         private readonly ILogger<LoginServices> _logger;
         private readonly IFornecedorServices _fornecedorServices;
+        private readonly IRecuperarDadosAcessoRepository _recuperarDadosAcessoRepository;
 
         public LoginServices(ILoginRepository loginRepository,
                              ILogger<LoginServices> logger,
-                             IFornecedorServices fornecedorServices)
+                             IFornecedorServices fornecedorServices,
+                             IRecuperarDadosAcessoRepository recuperarDadosAcessoRepository)
         {
             _loginRepository = loginRepository;
             _logger = logger;
             _fornecedorServices = fornecedorServices;
+            _recuperarDadosAcessoRepository = recuperarDadosAcessoRepository;
         }
 
         public async Task<Response<LoginResponse>> VerificarForcaSenhaAsync(LoginRequest loginRequest)
         {
+
             _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(VerificarForcaSenhaAsync)}  " +
                "com os seguintes parâmetros: {loginRequest}", loginRequest);
@@ -117,7 +120,7 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<LoginResponse>(loginResponse, $"Cadastro Login Usuário.");
         }
 
-        public async Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(int idUsuario)
+        public async Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(string idUsuario)
         {
             LoginResponse loginResponse = new LoginResponse();
 
@@ -126,7 +129,8 @@ namespace PortalFornecedor.Noventa.Application
              $"{nameof(AtivarCadastroLoginSistemaAsync)}  " +
            "com os seguintes parâmetros: {idUsuario}", idUsuario);
 
-            var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(idUsuario);
+            int id = int.Parse(Utils.Descriptografar(idUsuario));
+            var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(id);
 
             if (dadosAcessoUsuario != null)
             {
@@ -137,7 +141,7 @@ namespace PortalFornecedor.Noventa.Application
                 await _loginRepository.UpdateAsync(dadosAcessoUsuario);
 
                 loginResponse.Executado = true;
-                loginResponse.MensagemRetorno = "Login Ativado com Sucesso";
+                loginResponse.MensagemRetorno = "Login Ativado com Sucesso" + "\r\n" + "Acesse o Portal do Fornecedor";
 
             }
             else
@@ -230,51 +234,55 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<LoginResponse>(loginResponse, $"Dados Acesso.");
         }
 
-        public async Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(LoginRequest loginRequest)
+        public async Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(string email, string password)
         {
             LoginResponse loginResponse = new LoginResponse();
       
 
             _logger.LogInformation("Iniciando o método   " +
               $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
-            "com os seguintes parâmetros: {loginRequest}", loginRequest);
+            "com os seguintes parâmetros: {email}, {password}", email, password);
 
-            var senha = await VerificarForcaSenhaAsync(loginRequest);
+            var dadosAcesso = await _recuperarDadosAcessoRepository.GetAsync(x => x.Email == email);
 
-            if(senha.Data != null & senha.Data?.Executado == true)
+            if(dadosAcesso.Any())
             {
-                loginRequest.CnpjCpf = loginRequest.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-", "");
+                var dataAtual = DateTime.Now;
+                var dataAcesso = dadosAcesso.LastOrDefault();
 
-                var dadosAcesso = await _fornecedorServices.ListarDadosFornecedorAsync(loginRequest.CnpjCpf);
-
-                if (dadosAcesso.Data != null && dadosAcesso.Data.fornecedor != null)
+                TimeSpan ts = dataAtual - dataAcesso.DataValidadeAcesso;
+                
+                if(ts.TotalMinutes > 30)
                 {
-                    var login = await BuscarDadosUsuario(dadosAcesso.Data.fornecedor.Id);
+                    loginResponse.Executado = false;
+                    loginResponse.MensagemRetorno = "Foi ultrapassado o tempo para reativação da senha. Repita novamente!";
+                    return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
+                }
 
-                    login.Password = Utils.Criptografar(loginRequest.Password);
-                    login.DataAlteracaoCadastro = DateTime.Now;
-                    login.NomeUsuarioAlteracao = login.NomeUsuarioCadastro;
+                var login = await _loginRepository.GetAsync(x => x.Email == email);
 
-                    _loginRepository.Update(login);
+                if(login.Any()) 
+                {
+                    login.FirstOrDefault().Password = Utils.Criptografar(password);
+                    login.FirstOrDefault().DataAlteracaoCadastro = DateTime.Now;
+                    login.FirstOrDefault().NomeUsuarioAlteracao = login.FirstOrDefault().NomeUsuarioCadastro;
+
+                    _loginRepository.Update(login.FirstOrDefault());
 
                     loginResponse.Executado = true;
                     loginResponse.MensagemRetorno = "Alteração de password com sucesso";
-                }
-                else
-                {
-                    loginResponse.Executado = false;
-                    loginResponse.MensagemRetorno = "Não foi possível alterar a password no banco de dados!";
+
                 }
             }
             else
             {
                 loginResponse.Executado = false;
-                loginResponse.MensagemRetorno = "A password informada não atende os requisitos necessários!";
+                loginResponse.MensagemRetorno = "Não foi possível alterar a password no banco de dados!";
             }
-
+          
             _logger.LogInformation("Finalizando o método   " +
-           $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
-         "com os seguintes parâmetros: {loginRequest}", loginRequest);
+            $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
+          "com os seguintes parâmetros: {email}, {password}", email, password);
 
             return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
         }
@@ -310,7 +318,57 @@ namespace PortalFornecedor.Noventa.Application
             return login;
         }
 
-       
+        public async Task<Response<LoginResponse>> ConfirmarRecuperacaoDadosAcessoAsync(string Email, string url)
+        {
+            LoginResponse loginResponse = new LoginResponse();
+            Recuperar_Dados_Acesso dados_Acesso = new Recuperar_Dados_Acesso();
+
+            _logger.LogInformation("Iniciando o método   " +
+             $"{nameof(ConfirmarRecuperacaoDadosAcessoAsync)}  " +
+             "com os seguintes parâmetros: {Email}", Email);
+
+            dados_Acesso.Email = Email;
+            dados_Acesso.DataValidadeAcesso = DateTime.Now;
+
+            await _recuperarDadosAcessoRepository.AddAsync(dados_Acesso);
+            if(dados_Acesso.Id > 0) 
+            {
+                var dadosAcesso = _loginRepository.Get(x => x.Email == Email).FirstOrDefault();
+
+                var verificaDadosFornecedor = await _fornecedorServices.ListarDadosFornecedorAsync(dadosAcesso.Id);
+
+                string Nome = verificaDadosFornecedor.Data.fornecedor.RazaoSocial;
+
+                var htmlmessage = WriteMessageRecuperacao();
+                var link = url + Utils.Criptografar(Email);
+
+                htmlmessage = htmlmessage.Replace("@nome", Nome).Replace("@link", link);
+
+                Utils.EnviarEmail(Email, "Recuperação de Senha", htmlmessage, true, null, null);
+
+                loginResponse.Executado = true;
+                loginResponse.MensagemRetorno = "Dados do Fornecedor Recuperadados com sucesso";
+            }
+            else
+            {
+                loginResponse.Executado = false;
+                loginResponse.MensagemRetorno = "Não foi possível recuperar os dados de acesso!";
+            }
+
+
+            _logger.LogInformation("Finalizando o método   " +
+            $"{nameof(ConfirmarRecuperacaoDadosAcessoAsync)}  " +
+            "com os seguintes parâmetros: {Email}", Email);
+
+            return new Response<LoginResponse>(loginResponse, $"Dados Acesso.");
+        }
+
+
+        private string WriteMessageRecuperacao()
+        {
+            string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\recuperacao.html"));
+            return html;
+        }
 
         #endregion
 

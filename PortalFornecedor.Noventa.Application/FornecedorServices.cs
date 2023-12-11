@@ -5,6 +5,7 @@ using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
+using System;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -24,16 +25,9 @@ namespace PortalFornecedor.Noventa.Application
             _loginRepository = loginRepository;
         }
 
-        public async Task<Response<FornecedorResponse>> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest)
+        public async Task<Response<FornecedorResponse>> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest,string url)
         {
             FornecedorResponse fornecedorResponse = new FornecedorResponse();
-
-            var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
-
-            var htmlmessage = WriteMessageAtivacao();
-            htmlmessage = htmlmessage.Replace("@nome", fornecedorRequest.fornecedor.RazaoSocial).Replace("@link", "#linkdaativacao");
-
-            Utils.EnviarEmail(dadosAcessoUsuario.Email, "Ativacao de Senha", htmlmessage, true, null, null);
 
             _logger.LogInformation("Iniciando o método   " +
                  $"{nameof(AdicionarFornecedorAsync)}  " +
@@ -47,7 +41,16 @@ namespace PortalFornecedor.Noventa.Application
                     fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
                     await _fornecedorRepository.AddAsync(fornecedorRequest.fornecedor);
 
-                    fornecedorResponse.fornecedor = fornecedorRequest.fornecedor;
+                var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
+
+                var htmlmessage = WriteMessageAtivacao();
+                var link = url + Utils.Criptografar(dadosAcessoUsuario.Id.ToString());
+
+                htmlmessage = htmlmessage.Replace("@nome", fornecedorRequest.fornecedor.RazaoSocial).Replace("@link", link);
+
+                Utils.EnviarEmail(dadosAcessoUsuario.Email, "Ativacao de Senha", htmlmessage, true, null, null);
+
+                fornecedorResponse.fornecedor = fornecedorRequest.fornecedor;
                     fornecedorResponse.Executado = true;
                     fornecedorResponse.MensagemRetorno = "Dados do Cadastro do Fornecedor gravados com sucesso";
                 }
@@ -133,5 +136,6 @@ namespace PortalFornecedor.Noventa.Application
             string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\ativacao.html"));
             return html;
         }
+
     }
 }

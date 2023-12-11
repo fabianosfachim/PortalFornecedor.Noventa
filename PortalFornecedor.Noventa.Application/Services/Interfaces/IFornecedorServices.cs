@@ -10,7 +10,7 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// </summary>
         /// <param name="fornecedorRequest">Objeto para cadastro dos dados do fornecedor no portal</param>
         /// <returns>Retornar se os dados do fornecedor foram cadastrados ou não no portal</returns>
-        Task<Response<FornecedorResponse>> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest);
+        Task<Response<FornecedorResponse>> AdicionarFornecedorAsync(FornecedorRequest fornecedorRequest, string url);
 
         /// <summary>
         /// Listar o cadastro de um fornecedor no portal pelo cnpj

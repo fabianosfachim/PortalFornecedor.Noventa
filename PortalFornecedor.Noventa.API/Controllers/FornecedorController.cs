@@ -12,10 +12,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
     public class FornecedorController : ControllerBase
     {
         private readonly IFornecedorServices _fornecedorServices;
+        private readonly IConfiguration _configuration;
 
-        public FornecedorController(IFornecedorServices fornecedorServices)
+        public FornecedorController(IFornecedorServices fornecedorServices, 
+                                    IConfiguration configuration)
         {
             _fornecedorServices = fornecedorServices;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -31,8 +34,10 @@ namespace PortalFornecedor.Noventa.API.Controllers
             try
             {
                 HttpContext.Response.ContentType = "application/json";
+                
+                var url = _configuration.GetValue<string>("URL");
 
-                var response = await _fornecedorServices.AdicionarFornecedorAsync(fornecedorRequest);
+                var response = await _fornecedorServices.AdicionarFornecedorAsync(fornecedorRequest, url);
 
                 if (response.Data.Executado)
                 {

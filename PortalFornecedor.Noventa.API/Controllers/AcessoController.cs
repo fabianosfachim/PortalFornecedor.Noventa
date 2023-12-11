@@ -11,9 +11,12 @@ namespace PortalFornecedor.Noventa.API.Controllers
     public class AcessoController : ControllerBase
     {
         private readonly ILoginServices _loginServices;
-        public AcessoController(ILoginServices loginServices)
+        private readonly IConfiguration _configuration;
+
+        public AcessoController(ILoginServices loginServices, IConfiguration configuration)
         {
             _loginServices = loginServices;
+            _configuration = configuration;
         }
 
 
@@ -27,8 +30,6 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> VerificarForcaSenhaAsync(string parametro)
         {
-            HttpContext.Response.ContentType = "application/json";
-
             try
             {
                 LoginRequest loginRequest = new LoginRequest();
@@ -93,7 +94,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("AtivarAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(int idUsuario)
+        public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(string idUsuario)
         {
             try
             {
@@ -186,20 +187,21 @@ namespace PortalFornecedor.Noventa.API.Controllers
         /// <summary>
         /// Atualizar o cadastro da senha do usuário
         /// </summary>
-        /// <param name="loginRequest">Objeto de login</param>
+        /// <param name="email">Email</param>
+        /// <param name="password">password</param>
         /// <returns>Atualizar o cadastro da senha do fornecedor no portal</returns>
         [HttpPost]
         [Route("AtualizarPassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync([FromBody] LoginRequest loginRequest)
+        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync(string email, string password)
         {
             try
             {
-                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(loginRequest);
+                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(email, password);
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.fornecedor);
+                    return Ok(response.Data.MensagemRetorno);
                 }
                 else
                 {
@@ -213,5 +215,36 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Confirmar a recuperação de senha de acesso do fornecedor ao portal caso o mesmo tenha esquecido
+        /// </summary>
+        /// <param name="Email">Email do fornecedor para recuperação da senha</param>
+        /// <returns>Retornar a senha de acesso do fornecedor no portal</returns>
+        [HttpPost]
+        [Route("ConfirmarRecuperacaoDadosAcesso")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmarRecuperacaoDadosAcessoAsync(string Email)
+        {
+            try
+            {
+                var url = _configuration.GetValue<string>("URLSENHA");
+
+                var response = await _loginServices.ConfirmarRecuperacaoDadosAcessoAsync(Email, url);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.MensagemRetorno);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

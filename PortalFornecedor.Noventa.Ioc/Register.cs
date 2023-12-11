@@ -45,6 +45,7 @@ namespace PortalFornecedor.Noventa.Ioc
             services.AddTransient<IFreteRepository, FreteRepository>();
             services.AddTransient<ICotacaoRepository, CotacaoRepository>();
             services.AddTransient<IMaterialCotacaoRepository, MaterialCotacaoRepository>();
+            services.AddTransient<IRecuperarDadosAcessoRepository, RecuperarDadosAcessoRepository>();
             #endregion
         }
     }

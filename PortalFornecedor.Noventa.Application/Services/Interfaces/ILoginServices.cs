@@ -26,7 +26,7 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// </summary>
         /// <param name="idUsuario">Identificador do Usuario</param>
         /// <returns>Retornar a desativação do cadastro do fornecedor</returns>
-        Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(int idUsuario);
+        Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(string idUsuario);
 
         /// <summary>
         /// Verificar se os dados do fornecedor são válidos para fazer login na aplicação
@@ -47,7 +47,14 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// </summary>
         /// <param name="loginRequest">Objeto de login</param>
         /// <returns>Atualizar o cadastro da senha do fornecedor no portal</returns>
-        Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(LoginRequest loginRequest);
+        Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(string email, string password);
+
+        /// <summary>
+        /// Confirmar a recuperação de senha de acesso do fornecedor ao portal caso o mesmo tenha esquecido
+        /// </summary>
+        /// <param name="Email">Email do fornecedor para recuperação da senha</param>
+        /// <returns>Retornar a senha de acesso do fornecedor no portal</returns>
+        Task<Response<LoginResponse>> ConfirmarRecuperacaoDadosAcessoAsync(string Email, string url);
 
     }
 }

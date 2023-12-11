@@ -27,6 +27,7 @@ namespace PortalFornecedor.Noventa.Data
         public DbSet<Frete> Frete { get; set; }
         public DbSet<Cotacao> Cotacao { get; set; }
         public DbSet<Material_Cotacao> Material_Cotacao { get; set; }
+        public DbSet<Recuperar_Dados_Acesso> Recuperar_Dados_Acesso { get; set; }
 
     }
 }
