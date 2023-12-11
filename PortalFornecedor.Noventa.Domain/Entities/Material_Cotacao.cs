@@ -19,6 +19,8 @@ namespace PortalFornecedor.Noventa.Domain.Entities
         public DateTime? PrazoEntrega { get; set; }
         public string? Marca { get; set; }
         public decimal? SubTotal { get; set; }
-      
+        public bool Ativo { get; set; }
+
+
     }
 }

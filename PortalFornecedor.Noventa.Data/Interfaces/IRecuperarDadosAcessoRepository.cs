@@ -1,9 +1,8 @@
 ﻿using PortalFornecedor.Noventa.Domain.Entities;
 
-
 namespace PortalFornecedor.Noventa.Data.Interfaces
 {
-    public interface IOutrasDespesasRepository : IEntityRepository<Outras_Despesas>
+    public interface IRecuperarDadosAcessoRepository : IEntityRepository<Recuperar_Dados_Acesso>
     {
     }
 }
