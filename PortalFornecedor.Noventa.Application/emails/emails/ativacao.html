@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
+
+    <style type="text/css">
+        * {
+            font-family: Inter;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .logo {
+            width: 100%;
+            margin: 37px 0 27px 0;
+            display: table;
+        }
+
+        .logo img {
+            width: 95px;
+            height: 39px;
+        }
+
+        .container {
+            background-color: #F4F9FF;
+            display: table;
+            text-align: center;
+            width: 100%;
+        }
+
+        .container>svg {
+            margin: 25px 0;
+        }
+
+        .body-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 31px 54px;
+            margin-bottom: 30px;
+            width: 638px;
+            height: auto;
+            flex-shrink: 0;
+            display: inline-table;
+        }
+
+        .body-header {
+            display: table;
+            text-align: center;
+            width: 100%;
+        }
+
+        .body-header h3 {
+            color: #05496B;
+            font-size: 25px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin: 27px 0;
+        }
+
+        .body-header img {
+            text-align: center;
+        }
+
+        .body {
+            text-align: left;
+        }
+
+        .body p {
+            color: var(--Black, #282828);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 128.889%;
+        }
+
+        .body a {
+            color: #0074DF;
+        }
+
+        .footer {
+            text-align: left;
+        }
+
+        .footer p {
+            color: var(--dark-gray-label, #626262);
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 128.889%;
+        }
+
+        hr {
+            background-color: #D1E5FE;
+            width: 100%;
+            margin: 44px 0 29px 0;
+            border: none;
+            height: 1px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: row;
+            margin-top: 20px;
+        }
+
+        .info ::last-child {
+            margin-top: 41px;
+        }
+
+        .info span {
+            color: #0074DF;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 128.889%;
+        }
+        .main-pic {
+            margin-top: 17px;
+            margin-bottom: 27px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://www.stormclouds.com.br/email_template/img/90ti.png" alt="logo">
+        </div>
+        <div class="body-container">
+            <div class="body-header">
+                <h3>Olá, @nome</h3>
+                <img src="https://www.stormclouds.com.br/email_template/img/welcome.png" alt="main_pic">
+            </div>
+            <div class="body">
+                <p>
+                    Agradecemos por se cadastrar em nosso portal. Para concluir o processo de registro e ativar sua
+                    conta, precisamos que clique no link abaixo:
+                </p>
+                <a href="@link">
+                    Ativar minha conta
+                </a>
+                <p>
+                    Ao clicar neste link, sua conta será ativada e você terá acesso completo aos recursos e
+                    funcionalidades do portal. Se não conseguiu acessar o link diretamente, copie e cole o endereço em
+                    seu navegador.
+                </p>
+            </div>
+            <hr />
+            <div class="footer">
+                <p>
+                    Se você não realizou este cadastro ou não reconhece essa solicitação, por favor, ignore este e-mail.
+                    <br /><br />
+                    Agradecemos por fazer parte de nossa plataforma e esperamos que aproveite ao máximo nossos serviços.
+                    <br /><br />
+                    Atenciosamente,
+                </p>
+                <div class="info">
+                    <img src="https://www.stormclouds.com.br/email_template/img/90ti.png" alt="footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
