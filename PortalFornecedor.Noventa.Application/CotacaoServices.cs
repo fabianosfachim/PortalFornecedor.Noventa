@@ -17,7 +17,6 @@ namespace PortalFornecedor.Noventa.Application
         private readonly ICotacaoDadosSolicitanteServices _cotacaoDadosSolicitanteServices;
         private readonly ICondicaoPagamentoServices _condicaoPagamentoServices;
         private readonly IfreteServices _ifreteServices;
-        private readonly IOutrasDespesasServices _outrasDespesasServices;
         private readonly ICotacaoRepository _cotacaoRepository;
         private readonly IMaterialCotacaoRepository _materialCotacaoRepository;
 
@@ -28,7 +27,6 @@ namespace PortalFornecedor.Noventa.Application
                                ICotacaoDadosSolicitanteServices cotacaoDadosSolicitanteServices,
                                ICondicaoPagamentoServices condicaoPagamentoServices,
                                IfreteServices ifreteServices,
-                               IOutrasDespesasServices outrasDespesasServices,
                                ICotacaoRepository cotacaoRepository,
                                IMaterialCotacaoRepository materialCotacaoRepository)
         {
@@ -39,7 +37,6 @@ namespace PortalFornecedor.Noventa.Application
             _cotacaoDadosSolicitanteServices = cotacaoDadosSolicitanteServices;
             _condicaoPagamentoServices = condicaoPagamentoServices;
             _ifreteServices = ifreteServices;
-            _outrasDespesasServices = outrasDespesasServices;
             _cotacaoRepository = cotacaoRepository;
             _materialCotacaoRepository = materialCotacaoRepository;
         }
@@ -203,22 +200,6 @@ namespace PortalFornecedor.Noventa.Application
                     return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
                 }
 
-                var outrasDespesas = await ListarIdOutrasDespesaAsync(cotacaoRequest.OutrasDespesas);
-
-                if (outrasDespesas == false)
-                {
-                    cotacaoResponse.Executado = false;
-                    cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação pois as despesas não foram cadastrado no banco de dados!";
-                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
-
-                    _logger.LogError("Erro na execução do método " +
-                     $"{nameof(AdicionarCotacaoAsync)}   " +
-                     " Com o erro = " + cotacaoResponse.MensagemRetorno);
-
-                    return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
-                }
-
-
                 var dadosCotacao = PreencherDadosCotacao(idFornecedor,
                                                          idMotivoCotacao,
                                                          idStatusCotacao,
@@ -297,7 +278,6 @@ namespace PortalFornecedor.Noventa.Application
                                                          cotacaoRequest.CotacaoStatus_Id,
                                                          cotacaoRequest.CondicoesPagamento_Id,
                                                          cotacaoRequest.Frete_Id,
-                                                         cotacaoRequest.OutrasDespesas_Id.Value,
                                                          cotacaoRequest);
 
 
@@ -439,7 +419,17 @@ namespace PortalFornecedor.Noventa.Application
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao.subTotalItens = subTotalItens;
-                if(cotacao.FirstOrDefault().ValorFrete != null)
+
+                if (cotacao.FirstOrDefault().OutrasDespesas != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = cotacao.FirstOrDefault().OutrasDespesas.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorFrete != null)
                 {
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
                 }
@@ -466,15 +456,7 @@ namespace PortalFornecedor.Noventa.Application
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = 0;
                 }
 
-                if(!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeOutrasDespesas)) 
-                {
-                    cotacaoResponse.listarDadosCotacao.resumoCotacao.outrasDespesas = cotacaoResponse.listarDadosCotacao.cotacao.NomeOutrasDespesas;
-                }
-                else
-                {
-                    cotacaoResponse.listarDadosCotacao.resumoCotacao.outrasDespesas = string.Empty;
-                }
-
+               
                 if (!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento))
                 {
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento;
@@ -579,15 +561,6 @@ namespace PortalFornecedor.Noventa.Application
                 else
                 {
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = 0;
-                }
-
-                if (!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeOutrasDespesas))
-                {
-                    cotacaoResponse.listarDadosCotacao.resumoCotacao.outrasDespesas = cotacaoResponse.listarDadosCotacao.cotacao.NomeOutrasDespesas;
-                }
-                else
-                {
-                    cotacaoResponse.listarDadosCotacao.resumoCotacao.outrasDespesas = string.Empty;
                 }
 
                 if (!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento))
@@ -806,13 +779,6 @@ namespace PortalFornecedor.Noventa.Application
                 cotacaoDetalhe.NomeFrete = frete.Data.FreteDados.TipoFrete;
             }
            
-            if(cotacao.OutrasDespesas_Id != null)
-            {
-                cotacaoDetalhe.OutrasDespesas_Id = cotacao.OutrasDespesas_Id;
-                var outrasDespesas = _outrasDespesasServices.ListarOutrasDespesasAsync(cotacao.OutrasDespesas_Id.Value, cotacao.IdCotacao).Result;
-                cotacaoDetalhe.NomeOutrasDespesas = outrasDespesas.Data.OutrasDespesasDados.NomeDespesa;
-            }
-
             cotacaoDetalhe.ValorFrete = cotacao.ValorFrete;
             cotacaoDetalhe.ValorFreteForaNota = cotacao.ValorFreteForaNota;
             cotacaoDetalhe.ValorSeguro = cotacao.ValorSeguro;
@@ -845,7 +811,8 @@ namespace PortalFornecedor.Noventa.Application
             materialCotacao.PrazoEntrega = cotacaoRequest.MaterialCotacao[indice].PrazoEntrega;
             materialCotacao.Marca = cotacaoRequest.MaterialCotacao[indice].Marca;
             materialCotacao.SubTotal = cotacaoRequest.MaterialCotacao[indice].SubTotal;
-           
+            materialCotacao.Ativo = true;
+
             return materialCotacao;
         }
 
@@ -910,11 +877,7 @@ namespace PortalFornecedor.Noventa.Application
                 cotacao.Frete_Id = idFrete;
             }
 
-            if (idOutrasDespesas > 0)
-            {
-                cotacao.OutrasDespesas_Id = idOutrasDespesas;
-            }
-
+            cotacao.OutrasDespesas = cotacaoRequest.OutrasDespesas;
             cotacao.ValorFrete = cotacaoRequest.ValorFrete;
             cotacao.ValorFreteForaNota = cotacaoRequest.ValorFreteForaNota;
             cotacao.ValorSeguro = cotacaoRequest.ValorSeguro;
@@ -929,8 +892,7 @@ namespace PortalFornecedor.Noventa.Application
         }
 
         private Cotacao AtualizarDadosCotacao(int idFornecedor, int idMotivoCotacao, int idStatusCotacao,
-                                              int idFrete, int idCondicaoPagamento, int idOutrasDespesas,
-                                              AtualizarCotacaoRequest cotacaoRequest)
+                                              int idFrete, int idCondicaoPagamento, AtualizarCotacaoRequest cotacaoRequest)
         {
             Cotacao cotacao = new Cotacao();
 
@@ -966,11 +928,7 @@ namespace PortalFornecedor.Noventa.Application
                 cotacao.Frete_Id = idFrete;
             }
 
-            if (idOutrasDespesas > 0)
-            {
-                cotacao.OutrasDespesas_Id = idOutrasDespesas;
-            }
-
+            cotacao.OutrasDespesas = cotacaoRequest.OutrasDespesas;
             cotacao.ValorFrete = cotacaoRequest.ValorFrete;
             cotacao.ValorFreteForaNota = cotacaoRequest.ValorFreteForaNota;
             cotacao.ValorSeguro = cotacaoRequest.ValorSeguro;
@@ -1123,7 +1081,6 @@ namespace PortalFornecedor.Noventa.Application
             RemoverCotacaoDadosSolicitante(IdCotacao);
             RemoverCotacaoCondicaoPagamento(IdCotacao);
             RemoverCotacaoFrete(IdCotacao);
-            RemoverCotacaoOutrasDespesas(IdCotacao);
         }
         private async Task<int> ListarIdCotacaoDadosSolicitanteAsync(CotacaoDadosSolicitanteRequest cotacaoDadosSolicitanteRequest, string IdCotacao)
         {
@@ -1244,53 +1201,7 @@ namespace PortalFornecedor.Noventa.Application
                 }
             }
         }
-        private async Task<bool> ListarIdOutrasDespesaAsync(OutrasDespesasRequest outrasDespesasRequest)
-        {
-            bool frete = true;
-
-            try
-            {
-                if (outrasDespesasRequest.OutrasDespesas != null && outrasDespesasRequest.OutrasDespesas.Any())
-                {
-                    foreach (var item in outrasDespesasRequest.OutrasDespesas)
-                    {
-                        int idDespesa = await _outrasDespesasServices.ListarIdOutrasDespesasAsync(item.IdCotacao, item.NomeDespesa);
-
-                        if (idDespesa == 0)
-                        {
-                            Outras_Despesas outras_Despesas = new Outras_Despesas();
-
-                            outras_Despesas.Id = item.Id;
-                            outras_Despesas.IdCotacao = item.IdCotacao;
-                            outras_Despesas.NomeDespesa = item.NomeDespesa;
-
-                            await _outrasDespesasServices.InserirIdOutrasDespesasAsync(outras_Despesas);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            return frete;
-        }
-        private void RemoverCotacaoOutrasDespesas(string IdCotacao)
-        {
-            var dadosDespesa = _outrasDespesasServices.ListarIdOutrasDespesasAsync(IdCotacao).Result;
-          
-            if (dadosDespesa.Data.OutrasDespesas != null && dadosDespesa.Data.OutrasDespesas.Any())
-            {
-                foreach (var item in dadosDespesa.Data.OutrasDespesas)
-                {
-                    if (item.Id > 0)
-                    {
-                        _outrasDespesasServices.ExcluirCotacaoOutrasDespesasAsync(item.Id);
-                    }
-                }
-            }
-        }
+        
 
         #endregion
 

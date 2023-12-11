@@ -3,6 +3,7 @@ using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Domain.Model;
 using PortalFornecedor.Noventa.Data.Interfaces;
 using Microsoft.Extensions.Logging;
+using PortalFornecedor.Noventa.Application.Services.Util;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -22,7 +23,6 @@ namespace PortalFornecedor.Noventa.Application
         public async Task<Response<EstadoResponse>> ListarEstadoAsync()
         {
             EstadoResponse estadoResponse = new EstadoResponse();
-
             
                 _logger.LogInformation("Iniciando o método   " + 
                     $"{nameof(ListarEstadoAsync)}   ");

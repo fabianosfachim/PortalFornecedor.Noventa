@@ -31,7 +31,8 @@ GO
 INSERT [dbo].[status] ([id], [NomeStatus]) VALUES (3, N'Aprovada')
 GO
 INSERT [dbo].[status] ([id], [NomeStatus]) VALUES (4, N'Não Aprovada')
-
+GO
+INSERT [dbo].[status] ([id], [NomeStatus]) VALUES (5, N'Finalizada')
 GO
 SET IDENTITY_INSERT [dbo].[status] OFF
 GO

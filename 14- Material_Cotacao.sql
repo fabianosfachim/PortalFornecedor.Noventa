@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[material_cotacao](
 	[PrazoEntrega] [datetime] NULL,
 	[Marca] [varchar](100) NULL,
 	[SubTotal] [decimal](19, 2) NULL,
+	[Ativo] [bit] NOT NULL,
  CONSTRAINT [PK_material_cotacao_1] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

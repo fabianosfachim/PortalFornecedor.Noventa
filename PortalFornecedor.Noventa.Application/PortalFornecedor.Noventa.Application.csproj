@@ -22,4 +22,16 @@
     <ProjectReference Include="..\PortalFornecedor.Noventa.Domain\PortalFornecedor.Noventa.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="emails\emails\ativacao.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="emails\emails\nova-cotacao.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="emails\emails\recuperacao.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

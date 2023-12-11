@@ -13,7 +13,7 @@ namespace PortalFornecedor.Noventa.Domain.Entities
         public DateTime? DataPostagem { get; set; }
         public int? CondicoesPagamento_Id { get; set; }
         public int? Frete_Id { get; set; }
-        public int? OutrasDespesas_Id { get; set; }
+        public decimal? OutrasDespesas { get; set; }
         public decimal? ValorFrete { get; set; }
         public decimal? ValorFreteForaNota { get; set; }
         public decimal? ValorSeguro { get; set; }
