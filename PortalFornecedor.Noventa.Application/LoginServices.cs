@@ -141,7 +141,7 @@ namespace PortalFornecedor.Noventa.Application
                 await _loginRepository.UpdateAsync(dadosAcessoUsuario);
 
                 loginResponse.Executado = true;
-                loginResponse.MensagemRetorno = "Login Ativado com Sucesso" + "\r\n" + "Acesse o Portal do Fornecedor";
+                loginResponse.MensagemRetorno = "Login Ativado com Sucesso";
 
             }
             else
