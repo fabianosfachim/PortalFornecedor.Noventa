@@ -36,10 +36,10 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 loginRequest.Password = parametro;
 
                 var response = await _loginServices.VerificarForcaSenhaAsync(loginRequest);
-
+                
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.MensagemRetorno);
+                    return Ok();
                 }
                 else
                 {
@@ -102,7 +102,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.MensagemRetorno);
+                    return Ok();
                 }
                 else
                 {
@@ -170,7 +170,11 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.fornecedor);
+                    return Ok(new
+                    {
+                        login = response.Data.login,
+                        fornecedor = response.Data.fornecedor
+                    });
                 }
                 else
                 {
@@ -201,7 +205,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.MensagemRetorno);
+                    return Ok();
                 }
                 else
                 {
@@ -233,7 +237,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
                 if (response.Data.Executado)
                 {
-                    return Ok(response.Data.MensagemRetorno);
+                    return Ok();
                 }
                 else
                 {

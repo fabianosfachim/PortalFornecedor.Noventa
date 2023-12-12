@@ -1,7 +1,8 @@
-﻿using System.Text;
-using System.Security.Cryptography;
-using System.Net.Mail;
+﻿using System.Collections.Generic;
 using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace PortalFornecedor.Noventa.Application.Services.Util
@@ -17,7 +18,6 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
             tripledescryptoserviceprovider.Key = md5cryptoserviceprovider.ComputeHash(ASCIIEncoding.ASCII.GetBytes(myKey));
             tripledescryptoserviceprovider.Mode = CipherMode.ECB;
             ICryptoTransform desdencrypt = tripledescryptoserviceprovider.CreateEncryptor();
-            ASCIIEncoding MyASCIIEncoding = new ASCIIEncoding();
             byte[] buff = Encoding.ASCII.GetBytes(password);
 
             return Convert.ToBase64String(desdencrypt.TransformFinalBlock(buff, 0, buff.Length));
@@ -33,10 +33,9 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
             tripledescryptoserviceprovider.Key = md5cryptoserviceprovider.ComputeHash(ASCIIEncoding.ASCII.GetBytes(myKey));
             tripledescryptoserviceprovider.Mode = CipherMode.ECB;
             ICryptoTransform desdencrypt = tripledescryptoserviceprovider.CreateDecryptor();
-            byte[] buff = Convert.FromBase64String(entrada);
+            byte[] buff = Encoding.ASCII.GetBytes(entrada);
 
             return ASCIIEncoding.ASCII.GetString(desdencrypt.TransformFinalBlock(buff, 0, buff.Length));
-
         }
 
         public static void EnviarEmail(string destinatarios, string assunto, string mensagem, bool formatoHtml = false, List<Tuple<byte[], string>> anexos = null, Dictionary<string, string> imagemCidCaminho = null)

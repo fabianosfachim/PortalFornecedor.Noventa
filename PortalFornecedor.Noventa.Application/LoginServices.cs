@@ -211,12 +211,12 @@ namespace PortalFornecedor.Noventa.Application
              $"{nameof(RecuperarDadosAcessoAsync)}  " +
              "com os seguintes parâmetros: {CnpjCpf}", CnpjCpf);
 
-            CnpjCpf = CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-", ""); 
-
             var dadosAcesso = await _fornecedorServices.ListarDadosFornecedorAsync(CnpjCpf);
+            var dadosLogin = _loginRepository.GetById(dadosAcesso.Data.fornecedor.Id);
 
             if (dadosAcesso.Data != null && dadosAcesso.Data.fornecedor != null)
             {
+                loginResponse.login = dadosLogin;
                 loginResponse.fornecedor = dadosAcesso.Data.fornecedor;
                 loginResponse.Executado = true;
                 loginResponse.MensagemRetorno = "Dados do Fornecedor Recuperadados com sucesso";
@@ -242,6 +242,8 @@ namespace PortalFornecedor.Noventa.Application
             _logger.LogInformation("Iniciando o método   " +
               $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
             "com os seguintes parâmetros: {email}, {password}", email, password);
+
+            email = Utils.Descriptografar(email);
 
             var dadosAcesso = await _recuperarDadosAcessoRepository.GetAsync(x => x.Email == email);
 
@@ -334,6 +336,14 @@ namespace PortalFornecedor.Noventa.Application
             if(dados_Acesso.Id > 0) 
             {
                 var dadosAcesso = _loginRepository.Get(x => x.Email == Email).FirstOrDefault();
+                
+                if (dadosAcesso == null)
+                {
+                    loginResponse.Executado = false;
+                    loginResponse.MensagemRetorno = "Não foram encontrados dados para o e-mail selecionado!";
+
+                    return new Response<LoginResponse>(loginResponse, $"Dados Acesso.");
+                }
 
                 var verificaDadosFornecedor = await _fornecedorServices.ListarDadosFornecedorAsync(dadosAcesso.Id);
 
@@ -347,7 +357,7 @@ namespace PortalFornecedor.Noventa.Application
                 Utils.EnviarEmail(Email, "Recuperação de Senha", htmlmessage, true, null, null);
 
                 loginResponse.Executado = true;
-                loginResponse.MensagemRetorno = "Dados do Fornecedor Recuperadados com sucesso";
+                loginResponse.MensagemRetorno = "Um e-mail foi enviado para sua caixa de correio, com as instruções para recuperação da senha.";
             }
             else
             {
