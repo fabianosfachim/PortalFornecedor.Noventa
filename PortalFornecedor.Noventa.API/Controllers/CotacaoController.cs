@@ -53,11 +53,11 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.Executado);
+                return Ok(response.Data.MensagemRetorno);
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(response.Data.MensagemRetorno);
             }
         }
 
@@ -99,11 +99,11 @@ namespace PortalFornecedor.Noventa.API.Controllers
             var response = await _cotacaoServices.ListarCotacaoAsync(idCotacao, cnpj);
             if (response.Data.Executado)
             {
-                return Ok(response.Data.Executado);
+                return Ok(response.Data.listarDadosCotacao);
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(response.Data.MensagemRetorno);
             }
         }
 
