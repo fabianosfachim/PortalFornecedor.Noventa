@@ -123,7 +123,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.Executado);
+                return Ok(response.Data.listarDadosCotacao);
             }
             else
             {
@@ -146,7 +146,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.Executado);
+                return Ok(response.Data.listaFiltroCotacaos);
             }
             else
             {
