@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
