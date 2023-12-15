@@ -32,7 +32,7 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
             tripledescryptoserviceprovider.Key = md5cryptoserviceprovider.ComputeHash(ASCIIEncoding.ASCII.GetBytes(myKey));
             tripledescryptoserviceprovider.Mode = CipherMode.ECB;
             ICryptoTransform desdencrypt = tripledescryptoserviceprovider.CreateDecryptor();
-            byte[] buff = Convert.FromBase64String(entrada);
+            byte[] buff = Encoding.ASCII.GetBytes(entrada);
 
             return ASCIIEncoding.ASCII.GetString(desdencrypt.TransformFinalBlock(buff, 0, buff.Length));
 
