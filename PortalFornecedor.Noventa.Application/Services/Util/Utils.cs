@@ -35,7 +35,6 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
             byte[] buff = Encoding.ASCII.GetBytes(entrada);
 
             return ASCIIEncoding.ASCII.GetString(desdencrypt.TransformFinalBlock(buff, 0, buff.Length));
-
         }
 
         public static void EnviarEmail(string destinatarios, string assunto, string mensagem, bool formatoHtml = false, List<Tuple<byte[], string>> anexos = null, Dictionary<string, string> imagemCidCaminho = null)
