@@ -33,9 +33,10 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
             tripledescryptoserviceprovider.Key = md5cryptoserviceprovider.ComputeHash(ASCIIEncoding.ASCII.GetBytes(myKey));
             tripledescryptoserviceprovider.Mode = CipherMode.ECB;
             ICryptoTransform desdencrypt = tripledescryptoserviceprovider.CreateDecryptor();
-            byte[] buff = Encoding.ASCII.GetBytes(entrada);
+            byte[] buff = Convert.FromBase64String(entrada);
 
             return ASCIIEncoding.ASCII.GetString(desdencrypt.TransformFinalBlock(buff, 0, buff.Length));
+
         }
 
         public static void EnviarEmail(string destinatarios, string assunto, string mensagem, bool formatoHtml = false, List<Tuple<byte[], string>> anexos = null, Dictionary<string, string> imagemCidCaminho = null)
