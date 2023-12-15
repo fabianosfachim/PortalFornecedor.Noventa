@@ -12,6 +12,7 @@
         public DateTime DataAlteracaoCadastro { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataUltimaSessaoAtivaUsuario { get; set; }
+        public Guid Guid { get; set; }
 
     }
 }

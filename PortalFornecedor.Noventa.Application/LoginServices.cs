@@ -119,7 +119,7 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<LoginResponse>(loginResponse, $"Cadastro Login Usuário.");
         }
 
-        public async Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(string idUsuario)
+        public async Task<Response<LoginResponse>> AtivarCadastroLoginSistemaAsync(Guid idUsuario)
         {
             LoginResponse loginResponse = new LoginResponse();
 
@@ -128,8 +128,8 @@ namespace PortalFornecedor.Noventa.Application
              $"{nameof(AtivarCadastroLoginSistemaAsync)}  " +
            "com os seguintes parâmetros: {idUsuario}", idUsuario);
 
-            int id = int.Parse(Utils.Descriptografar(idUsuario));
-            var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(id);
+            var dadosAcessoUsuario = _loginRepository.Get(x => x.Guid == idUsuario).FirstOrDefault();
+
 
             if (dadosAcessoUsuario != null)
             {
@@ -169,11 +169,13 @@ namespace PortalFornecedor.Noventa.Application
             "com os seguintes parâmetros: {loginRequest}", loginRequest);
 
             loginRequest.Email = loginRequest.Email;
-            loginRequest.Password = Utils.Criptografar(loginRequest.Password);
+            loginRequest.Password = loginRequest.Password;
 
             var dadosAcesso = _loginRepository.Get(x => x.Email == loginRequest.Email
                                             && x.Password == loginRequest.Password
                                             && x.Ativo == true).FirstOrDefault();
+
+
 
             if (dadosAcesso != null)
             {
@@ -233,38 +235,36 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<LoginResponse>(loginResponse, $"Dados Acesso.");
         }
 
-        public async Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(string email, string password)
+        public async Task<Response<LoginResponse>> AtualizarCadastroLoginSistemaAsync(Guid guid, string password)
         {
             LoginResponse loginResponse = new LoginResponse();
       
 
             _logger.LogInformation("Iniciando o método   " +
               $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
-            "com os seguintes parâmetros: {email}, {password}", email, password);
+            "com os seguintes parâmetros: {guid}, {password}", guid, password);
 
-            email = Utils.Descriptografar(email);
+            var login = await _loginRepository.GetAsync(x => x.Guid == guid);
 
-            var dadosAcesso = await _recuperarDadosAcessoRepository.GetAsync(x => x.Email == email);
-
-            if(dadosAcesso.Any())
+            if (login.Any())
             {
-                var dataAtual = DateTime.Now;
-                var dataAcesso = dadosAcesso.LastOrDefault();
+                var dadosAcesso = await _recuperarDadosAcessoRepository.GetAsync(x => x.Email == login.FirstOrDefault().Email);
 
-                TimeSpan ts = dataAtual - dataAcesso.DataValidadeAcesso;
-                
-                if(ts.TotalMinutes > 30)
+                if (dadosAcesso.Any())
                 {
-                    loginResponse.Executado = false;
-                    loginResponse.MensagemRetorno = "Foi ultrapassado o tempo para reativação da senha. Repita novamente!";
-                    return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
-                }
+                    var dataAtual = DateTime.Now;
+                    var dataAcesso = dadosAcesso.LastOrDefault();
 
-                var login = await _loginRepository.GetAsync(x => x.Email == email);
+                    TimeSpan ts = dataAtual - dataAcesso.DataValidadeAcesso;
 
-                if(login.Any()) 
-                {
-                    login.FirstOrDefault().Password = Utils.Criptografar(password);
+                    if (ts.TotalMinutes > 30)
+                    {
+                        loginResponse.Executado = false;
+                        loginResponse.MensagemRetorno = "Foi ultrapassado o tempo para reativação da senha. Repita novamente!";
+                        return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
+                    }
+
+                    login.FirstOrDefault().Password = password;
                     login.FirstOrDefault().DataAlteracaoCadastro = DateTime.Now;
                     login.FirstOrDefault().NomeUsuarioAlteracao = login.FirstOrDefault().NomeUsuarioCadastro;
 
@@ -272,7 +272,11 @@ namespace PortalFornecedor.Noventa.Application
 
                     loginResponse.Executado = true;
                     loginResponse.MensagemRetorno = "Alteração de password com sucesso";
-
+                }
+                else
+                {
+                    loginResponse.Executado = false;
+                    loginResponse.MensagemRetorno = "Não foi possível alterar a password no banco de dados!";
                 }
             }
             else
@@ -280,10 +284,10 @@ namespace PortalFornecedor.Noventa.Application
                 loginResponse.Executado = false;
                 loginResponse.MensagemRetorno = "Não foi possível alterar a password no banco de dados!";
             }
-          
+
             _logger.LogInformation("Finalizando o método   " +
             $"{nameof(AtualizarCadastroLoginSistemaAsync)}  " +
-          "com os seguintes parâmetros: {email}, {password}", email, password);
+          "com os seguintes parâmetros: {guid}, {password}", guid, password);
 
             return new Response<LoginResponse>(loginResponse, $"Atualização do Cadastro do Login Usuário.");
         }
@@ -303,11 +307,9 @@ namespace PortalFornecedor.Noventa.Application
         {
             Login login = new Login();
 
-            var password = Utils.Criptografar(loginRequest.Password);
-
-
+            
             login.Email = loginRequest.Email;
-            login.Password = password;
+            login.Password = loginRequest.Password;
             login.Nome = loginRequest.Nome;
             login.NomeUsuarioCadastro = loginRequest.Nome;
             login.DataCadastro = DateTime.Now;
@@ -315,7 +317,7 @@ namespace PortalFornecedor.Noventa.Application
             login.DataAlteracaoCadastro = DateTime.Now;
             login.Ativo = false;
             login.DataUltimaSessaoAtivaUsuario = DateTime.Now;
-
+            login.Guid = Guid.NewGuid();
             return login;
         }
 
@@ -349,7 +351,7 @@ namespace PortalFornecedor.Noventa.Application
                 string Nome = verificaDadosFornecedor.Data.fornecedor.RazaoSocial;
 
                 var htmlmessage = WriteMessageRecuperacao();
-                var link = url + Utils.Criptografar(Email);
+                var link = url + dadosAcesso.Guid;
 
                 htmlmessage = htmlmessage.Replace("@nome", Nome).Replace("@link", link);
 
