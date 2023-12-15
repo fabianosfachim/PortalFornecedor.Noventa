@@ -28,9 +28,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             var response = await _cotacaoServices.AdicionarCotacaoAsync(cotacaoRequest);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.Executado);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
         }
 
         /// <summary>
@@ -46,9 +51,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             var response = await _cotacaoServices.AtualizarCotacaoAsync(cotacaoRequest);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.MensagemRetorno);
+            }
+            else
+            {
+                return BadRequest(response.Data.MensagemRetorno);
+            }
         }
 
         /// <summary>
@@ -64,9 +74,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             var response = await _cotacaoServices.AtualizarStatusCotacaoAsync(idCotacao, idStatus);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.Executado);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
         }
 
         /// <summary>
@@ -82,10 +97,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
         {
 
             var response = await _cotacaoServices.ListarCotacaoAsync(idCotacao, cnpj);
-
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.listarDadosCotacao);
+            }
+            else
+            {
+                return BadRequest(response.Data.MensagemRetorno);
+            }
         }
 
         /// <summary>
@@ -102,9 +121,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             var response = await _cotacaoServices.ListarCotacaoAsync(Id);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.listarDadosCotacao);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
         }
 
         /// <summary>
@@ -120,9 +144,14 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             var response = await _cotacaoServices.ListarCotacaoAsync(cotacaoDetalheFiltroRequest);
 
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.listaFiltroCotacaos);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
         }
     }
 }

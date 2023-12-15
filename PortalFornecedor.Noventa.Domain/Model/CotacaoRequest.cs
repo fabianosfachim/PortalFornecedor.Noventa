@@ -13,11 +13,11 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public DateTime? DataPostagem { get; set; }
         public CondicaoPagamentoRequest CondicoesPagamento { get;set; }
         public FreteRequest TipoFrete { get; set; }
-        public OutrasDespesasRequest? OutrasDespesas { get;set; }
-        public int? ValorFrete { get; set; }
-        public int? ValorFreteForaNota { get; set; }
-        public int? ValorSeguro { get; set; }
-        public int? ValorDesconto { get; set; }
+        public decimal? OutrasDespesas { get; set; }
+        public decimal? ValorFrete { get; set; }
+        public decimal? ValorFreteForaNota { get; set; }
+        public decimal? ValorSeguro { get; set; }
+        public decimal? ValorDesconto { get; set; }
         public string? Observacao { get; set; }
         public string NomeUsuarioCadastro { get; set; }
         public DateTime DataCadastro { get; set; }
