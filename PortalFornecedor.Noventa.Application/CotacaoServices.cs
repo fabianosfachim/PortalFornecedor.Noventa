@@ -533,7 +533,8 @@ namespace PortalFornecedor.Noventa.Application
 
                 cotacaoResponse.listarDadosCotacao = new ListarDadosCotacao();
                 cotacaoResponse.listarDadosCotacao.dadosSolicitante = dadosSolicitante.Data.solicitante;
-                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDadosCotacao(cotacao.FirstOrDefault());
+
+                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault()); 
                 cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
@@ -657,10 +658,6 @@ namespace PortalFornecedor.Noventa.Application
                     var DadosStatus = _cotacaoStatusServices.ListarCotacaoAsync(item.CotacaoStatus_Id).Result;
                     string status = DadosStatus.Data.StatusDados.NomeStatus;
 
-                    if (DadosStatus.Data.StatusDados.Id == (int)StatusCotacao.Status.Pendente)
-                    {
-                        continue;
-                    }
 
                     if (!string.IsNullOrEmpty(cotacaoDetalheFiltroRequest.solicitacao))
                     {
@@ -676,7 +673,8 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.statusId != null)
                     {
-                        if (cotacaoDetalheFiltroRequest.statusId == item.CotacaoStatus_Id)
+                        
+                        if (cotacaoDetalheFiltroRequest.statusId == DadosStatus.Data.StatusDados.Id)
                         {
                             retornoStatus = true;
                         }
@@ -688,7 +686,7 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.motivoId != null)
                     {
-                        if (cotacaoDetalheFiltroRequest.motivoId == item.Motivo_Id)
+                        if (cotacaoDetalheFiltroRequest.motivoId == DadosMotivo.Data.MotivoDados.Id)
                         {
                             retornoMotivo = true;
                         }
@@ -700,7 +698,11 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.dataInicio != null && cotacaoDetalheFiltroRequest.dataTermino != null)
                     {
-                        if ((cotacaoDetalheFiltroRequest.dataInicio >= dataSolicitacao) && (cotacaoDetalheFiltroRequest.dataTermino <= dataSolicitacao))
+                        bool retornoData = Between(DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")), 
+                                                  DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd")), 
+                                                  DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")));
+
+                        if (retornoData == true)
                         {
                             retornoPeriodo = true;
                         }
@@ -752,6 +754,85 @@ namespace PortalFornecedor.Noventa.Application
 
         #region TabelasAuxiliaresCotacao
 
+        private bool Between(DateTime input, DateTime date1, DateTime date2)
+        {
+            bool retorno = false;
+
+            if(input >= date1)
+            {
+                retorno = true;
+            }
+            else if (input <= date2)
+            {
+                retorno = true;
+            }
+            else
+            {
+                retorno = false;
+            }
+
+            return retorno;
+        }
+
+        private CotacaoDetalhe PreencherDados(Cotacao cotacao)
+        {
+            CotacaoDetalhe cotacaoDetalhe = new CotacaoDetalhe();
+
+            cotacaoDetalhe.Id = cotacao.Id;
+            cotacaoDetalhe.Fornecedor_Id = cotacao.Fornecedor_Id;
+
+            var fornecedor = _fornecedorServices.ListarDadosFornecedorAsync(cotacao.Fornecedor_Id).Result;
+            cotacaoDetalhe.NomeFornecedor = fornecedor.Data.fornecedor.RazaoSocial;
+            cotacaoDetalhe.IdCotacao = cotacao.IdCotacao;
+            cotacaoDetalhe.Motivo_Id = cotacao.Motivo_Id;
+
+            if (cotacao.Motivo_Id != null)
+            {
+                var motivo = _motivoServices.ListarMotivoAsync(cotacao.Motivo_Id).Result;
+                cotacaoDetalhe.NomeMotivo = motivo.Data.MotivoDados.NomeMotivo;
+            }
+
+            cotacaoDetalhe.CotacaoStatus_Id = cotacao.CotacaoStatus_Id;
+
+            if (cotacaoDetalhe.CotacaoStatus_Id != null)
+            {
+                var status = _cotacaoStatusServices.ListarCotacaoAsync(cotacaoDetalhe.CotacaoStatus_Id).Result;
+                cotacaoDetalhe.NomeStatus = status.Data.StatusDados.NomeStatus;
+            }
+
+            cotacaoDetalhe.Vendedor = cotacao.Vendedor;
+            cotacaoDetalhe.DataPostagem = cotacao.DataPostagem;
+            cotacaoDetalhe.CondicoesPagamento_Id = cotacao.CondicoesPagamento_Id;
+
+            if (cotacao.CondicoesPagamento_Id != null)
+            {
+                var condicaoPagamento = _condicaoPagamentoServices.ListarCondicaoPagamentoAsync(cotacao.CondicoesPagamento_Id.Value, cotacao.IdCotacao).Result;
+                cotacaoDetalhe.NomeCondicaoPagamento = condicaoPagamento.Data.PagamentosDados.StatusCondicoesPagamento;
+            }
+
+            cotacaoDetalhe.Frete_Id = cotacao.Frete_Id;
+
+            if (cotacaoDetalhe.Frete_Id != null)
+            {
+                var frete = _ifreteServices.ListarFreteAsync(cotacao.Frete_Id.Value, cotacao.IdCotacao).Result;
+                cotacaoDetalhe.NomeFrete = frete.Data.FreteDados.TipoFrete;
+            }
+
+            cotacaoDetalhe.ValorFrete = cotacao.ValorFrete;
+            cotacaoDetalhe.ValorFreteForaNota = cotacao.ValorFreteForaNota;
+            cotacaoDetalhe.ValorSeguro = cotacao.ValorSeguro;
+            cotacaoDetalhe.ValorDesconto = cotacao.ValorDesconto;
+            cotacaoDetalhe.DataEntregaDesejavel = cotacao.DataEntregaDesejavel;
+            cotacaoDetalhe.PrazoMaximoCotacao = cotacao.PrazoMaximoCotacao;
+            cotacaoDetalhe.Observacao = cotacao.Observacao;
+            cotacaoDetalhe.NomeUsuarioCadastro = cotacao.NomeUsuarioCadastro;
+            cotacaoDetalhe.DataCadastro = cotacao.DataCadastro;
+            cotacaoDetalhe.NomeUsuarioAlteracao = cotacao.NomeUsuarioAlteracao;
+            cotacaoDetalhe.DataAlteracao = cotacao.DataAlteracao;
+
+            return cotacaoDetalhe;
+        }
+
         private CotacaoDetalhe PreencherDadosCotacao(Cotacao cotacao)
         {
             CotacaoDetalhe cotacaoDetalhe = new CotacaoDetalhe();
@@ -800,6 +881,8 @@ namespace PortalFornecedor.Noventa.Application
             cotacaoDetalhe.ValorFreteForaNota = cotacao.ValorFreteForaNota;
             cotacaoDetalhe.ValorSeguro = cotacao.ValorSeguro;
             cotacaoDetalhe.ValorDesconto = cotacao.ValorDesconto;
+            cotacaoDetalhe.DataEntregaDesejavel = cotacao.DataEntregaDesejavel;
+            cotacaoDetalhe.PrazoMaximoCotacao = cotacao.PrazoMaximoCotacao;
             cotacaoDetalhe.Observacao = cotacao.Observacao;
             cotacaoDetalhe.NomeUsuarioCadastro = cotacao.NomeUsuarioCadastro;
             cotacaoDetalhe.DataCadastro = cotacao.DataCadastro;
