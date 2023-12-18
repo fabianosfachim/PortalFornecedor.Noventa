@@ -38,13 +38,17 @@ namespace PortalFornecedor.Noventa.Application
 
                 if(!verificaDadosFornecedor.Any())
                 {
-                    fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
+                var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
+                fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
+            
+                if(fornecedorRequest.fornecedor.RazaoSocial == "Não se aplica")
+                {
+                    fornecedorRequest.fornecedor.RazaoSocial = dadosAcessoUsuario.Nome;
+                }
                     await _fornecedorRepository.AddAsync(fornecedorRequest.fornecedor);
 
-                var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
-
                 var htmlmessage = WriteMessageAtivacao();
-                var link = url + Utils.Criptografar(dadosAcessoUsuario.Id.ToString());
+                var link = url + dadosAcessoUsuario.Guid;
 
                 htmlmessage = htmlmessage.Replace("@nome", fornecedorRequest.fornecedor.RazaoSocial).Replace("@link", link);
 

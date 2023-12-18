@@ -14,6 +14,7 @@ CREATE TABLE [dbo].[login](
 	[DataAlteracaoCadastro] [datetime] NULL,
 	[Ativo] [bit] NOT NULL,
 	[DataUltimaSessaoAtivaUsuario] [datetime] NULL,
+	[Guid] [uniqueidentifier] NOT NULL,
  CONSTRAINT [PK_tb_login] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

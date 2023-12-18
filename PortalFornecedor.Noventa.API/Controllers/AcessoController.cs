@@ -94,7 +94,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpGet]
         [Route("AtivarAcesso")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(string idUsuario)
+        public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(Guid idUsuario)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         {
             try
             {
-                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(email, password);
+                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(Guid.Parse(email), password);
 
                 if (response.Data.Executado)
                 {
