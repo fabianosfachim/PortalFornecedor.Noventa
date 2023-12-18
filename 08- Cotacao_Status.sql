@@ -1,9 +1,8 @@
-/****** Object:  Table [dbo].[cotacao_status]    Script Date: 11/3/2023 5:59:58 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[cotacao_status]') AND type in (N'U'))
 DROP TABLE [dbo].[cotacao_status]
 GO
 
-/****** Object:  Table [dbo].[cotacao_status]    Script Date: 11/3/2023 5:59:58 PM ******/
+/****** Object:  Table [dbo].[cotacao_status]    Script Date: 12/18/2023 10:09:10 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -22,15 +21,11 @@ CREATE TABLE [dbo].[cotacao_status](
 ) ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [IX_STATUS] ON [dbo].[cotacao_status]
-(
-	[IdStatus] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+ALTER TABLE [dbo].[cotacao_status]  WITH CHECK ADD  CONSTRAINT [FK_cotacao_status_status] FOREIGN KEY([IdStatus])
+REFERENCES [dbo].[status] ([Id])
 GO
 
-/****** Object:  Index [IX_COTACAO]    Script Date: 11/3/2023 6:06:30 PM ******/
-CREATE NONCLUSTERED INDEX [IX_COTACAO] ON [dbo].[cotacao_status]
-(
-	[IdCotacao] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+ALTER TABLE [dbo].[cotacao_status] CHECK CONSTRAINT [FK_cotacao_status_status]
 GO
+
+

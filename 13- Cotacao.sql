@@ -27,6 +27,8 @@ CREATE TABLE [dbo].[cotacao](
 	[ValorSeguro] [decimal](19, 2) NULL,
 	[ValorDesconto] [decimal](19, 2) NULL,
 	[Observacao] [varchar](max) NULL,
+	[PrazoMaximoCotacao] [datetime] NULL,
+	[DataEntregaDesejavel] [datetime] NULL,
     [NomeUsuarioCadastro] [varchar](50) NOT NULL,
 	[DataCadastro] [datetime] NOT NULL,
 	[NomeUsuarioAlteracao] [varchar](50) NULL,

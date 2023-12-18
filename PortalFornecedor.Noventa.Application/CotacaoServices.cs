@@ -899,6 +899,8 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.ValorFreteForaNota = cotacaoRequest.ValorFreteForaNota;
             cotacao.ValorSeguro = cotacaoRequest.ValorSeguro;
             cotacao.ValorDesconto = cotacaoRequest.ValorDesconto;
+            cotacao.PrazoMaximoCotacao = cotacaoRequest.PrazoMaximoCotacao;
+            cotacao.DataEntregaDesejavel = cotacaoRequest.DataEntregaDesejavel;
             cotacao.Observacao = cotacaoRequest.Observacao;
             cotacao.NomeUsuarioCadastro = cotacaoRequest.NomeUsuarioCadastro;
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
@@ -950,6 +952,8 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.ValorFreteForaNota = cotacaoRequest.ValorFreteForaNota;
             cotacao.ValorSeguro = cotacaoRequest.ValorSeguro;
             cotacao.ValorDesconto = cotacaoRequest.ValorDesconto;
+            cotacao.PrazoMaximoCotacao = cotacaoRequest.PrazoMaximoCotacao;
+            cotacao.DataEntregaDesejavel = cotacaoRequest.DataEntregaDesejavel;
             cotacao.Observacao = cotacaoRequest.Observacao;
             cotacao.NomeUsuarioCadastro = cotacaoRequest.NomeUsuarioCadastro;
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
