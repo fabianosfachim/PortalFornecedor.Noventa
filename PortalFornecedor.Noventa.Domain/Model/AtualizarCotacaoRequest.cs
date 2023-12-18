@@ -19,6 +19,8 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public decimal? ValorFreteForaNota { get; set; }
         public decimal? ValorSeguro { get; set; }
         public decimal? ValorDesconto { get; set; }
+        public DateTime? PrazoMaximoCotacao { get; set; }
+        public DateTime? DataEntregaDesejavel { get; set; }
         public string? Observacao { get; set; }
         public string NomeUsuarioCadastro { get; set; }
         public DateTime DataCadastro { get; set; }
