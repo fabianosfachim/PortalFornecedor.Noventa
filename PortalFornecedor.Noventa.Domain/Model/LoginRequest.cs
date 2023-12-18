@@ -1,11 +1,4 @@
-﻿using PortalFornecedor.Noventa.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PortalFornecedor.Noventa.Domain.Model
+﻿namespace PortalFornecedor.Noventa.Domain.Model
 {
     public class LoginRequest
     {

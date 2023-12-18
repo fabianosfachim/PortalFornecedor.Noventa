@@ -1,5 +1,4 @@
 ﻿using PortalFornecedor.Noventa.Application.Services.Wrappers;
-using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 
 
