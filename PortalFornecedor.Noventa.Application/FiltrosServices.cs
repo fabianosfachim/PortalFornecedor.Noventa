@@ -180,7 +180,9 @@ namespace PortalFornecedor.Noventa.Application
                 }
                 dashBoardResponse.CotacoesPendentes = CotacoesPendentes;
                 dashBoardResponse.CotacoesEnviadas = CotacoesEnviadas;
-                if(listaAtividadesRecentesDashBoard.Count > 0)
+                dashBoardResponse.OcsAprovadas = 0;
+                dashBoardResponse.OcsFinalizadas = 0;
+                if (listaAtividadesRecentesDashBoard.Count > 0)
                 {
                     dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard;
                 }
