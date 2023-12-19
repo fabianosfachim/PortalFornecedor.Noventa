@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
+using PortalFornecedor.Noventa.Application.Services.Util;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Data.Repositories.Entities;
@@ -698,7 +699,7 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.dataInicio != null && cotacaoDetalheFiltroRequest.dataTermino != null)
                     {
-                        bool retornoData = Between(DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")), 
+                        bool retornoData = Utils.Between(DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")), 
                                                   DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd")), 
                                                   DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")));
 
@@ -754,25 +755,6 @@ namespace PortalFornecedor.Noventa.Application
 
         #region TabelasAuxiliaresCotacao
 
-        private bool Between(DateTime input, DateTime date1, DateTime date2)
-        {
-            bool retorno = false;
-
-            if(input >= date1)
-            {
-                retorno = true;
-            }
-            else if (input <= date2)
-            {
-                retorno = true;
-            }
-            else
-            {
-                retorno = false;
-            }
-
-            return retorno;
-        }
 
         private CotacaoDetalhe PreencherDados(Cotacao cotacao)
         {

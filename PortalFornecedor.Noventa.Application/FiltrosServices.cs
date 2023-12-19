@@ -239,7 +239,22 @@ namespace PortalFornecedor.Noventa.Application
 
         private static bool Between(DateTime input, DateTime date1, DateTime date2)
         {
-            return (date1 >= input && input < date2);
+            bool retorno = false;
+
+            if (input >= date1)
+            {
+                retorno = true;
+            }
+            else if (input <= date2)
+            {
+                retorno = true;
+            }
+            else
+            {
+                retorno = false;
+            }
+
+            return retorno;
         }
     }
 }
