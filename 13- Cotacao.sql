@@ -32,7 +32,8 @@ CREATE TABLE [dbo].[cotacao](
     [NomeUsuarioCadastro] [varchar](50) NOT NULL,
 	[DataCadastro] [datetime] NOT NULL,
 	[NomeUsuarioAlteracao] [varchar](50) NULL,
-	[DataAlteracao] [datetime] NULL	
+	[DataAlteracao] [datetime] NULL,
+	[Guid] [uniqueidentifier] NOT NULL,	
  CONSTRAINT [PK_cotacao] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
