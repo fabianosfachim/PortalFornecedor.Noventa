@@ -32,7 +32,8 @@ CREATE TABLE [dbo].[cotacao](
     [NomeUsuarioCadastro] [varchar](50) NOT NULL,
 	[DataCadastro] [datetime] NOT NULL,
 	[NomeUsuarioAlteracao] [varchar](50) NULL,
-	[DataAlteracao] [datetime] NULL	
+	[DataAlteracao] [datetime] NULL,
+	[Guid] [uniqueidentifier] NOT NULL,	
  CONSTRAINT [PK_cotacao] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -66,5 +67,11 @@ CREATE NONCLUSTERED INDEX [IX_Cotacao] ON [dbo].[cotacao]
 (
 	[Fornecedor_Id] ASC,
 	[IdCotacao] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_CotacaoGuid] ON [dbo].[cotacao]
+(
+	[Guid] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO

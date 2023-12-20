@@ -6,6 +6,7 @@ using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Data.Repositories.Entities;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
+using System;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -20,6 +21,7 @@ namespace PortalFornecedor.Noventa.Application
         private readonly IfreteServices _ifreteServices;
         private readonly ICotacaoRepository _cotacaoRepository;
         private readonly IMaterialCotacaoRepository _materialCotacaoRepository;
+        private readonly ILoginRepository _loginRepository;
 
         public CotacaoServices(ILogger<CotacaoServices> logger,
                                IFornecedorServices fornecedorServices,
@@ -29,7 +31,8 @@ namespace PortalFornecedor.Noventa.Application
                                ICondicaoPagamentoServices condicaoPagamentoServices,
                                IfreteServices ifreteServices,
                                ICotacaoRepository cotacaoRepository,
-                               IMaterialCotacaoRepository materialCotacaoRepository)
+                               IMaterialCotacaoRepository materialCotacaoRepository,
+                               ILoginRepository loginRepository)
         {
             _logger = logger;
             _fornecedorServices = fornecedorServices;
@@ -40,9 +43,10 @@ namespace PortalFornecedor.Noventa.Application
             _ifreteServices = ifreteServices;
             _cotacaoRepository = cotacaoRepository;
             _materialCotacaoRepository = materialCotacaoRepository;
+            _loginRepository = loginRepository;
         }
 
-        public async Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest)
+        public async Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest, string url)
         {
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
             int idFornecedor = 0;
@@ -53,6 +57,7 @@ namespace PortalFornecedor.Noventa.Application
             int idCotacaoDadosSolicitante = 0;
             int i = 0;
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            Cotacao dadosCotacao =  new Cotacao();
 
             try
             {
@@ -201,13 +206,13 @@ namespace PortalFornecedor.Noventa.Application
                     return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
                 }
 
-                var dadosCotacao = PreencherDadosCotacao(idFornecedor,
-                                                         idMotivoCotacao,
-                                                         idStatusCotacao,
-                                                         0,
-                                                         0,
-                                                         0,
-                                                         cotacaoRequest);
+                dadosCotacao = PreencherDadosCotacao(idFornecedor,
+                                                     idMotivoCotacao,
+                                                     idStatusCotacao,
+                                                     0,
+                                                     0,
+                                                     0,
+                                                     cotacaoRequest);
 
                 var idCotacao = await _cotacaoRepository.GetAsync(x => x.IdCotacao == cotacaoRequest.ERPCotacao_Id && x.Fornecedor_Id == idFornecedor);
 
@@ -240,9 +245,15 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
 
-                _logger.LogInformation("Finalizando o método   " +
-                    $"{nameof(AdicionarCotacaoAsync)}  " +
-                    "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+                var dadosAcesso = await _fornecedorServices.ListarDadosFornecedorAsync(cotacaoRequest.CNPJ);
+                var dadosLogin = _loginRepository.GetById(dadosAcesso.Data.fornecedor.Id);
+
+                var htmlmessage = WriteMessageNovaCotacao();
+                var link = url + dadosCotacao.Guid;
+
+                htmlmessage = htmlmessage.Replace("@nome", dadosAcesso.Data.fornecedor.RazaoSocial).Replace("@link", link);
+
+                Utils.EnviarEmail(dadosLogin.Email, "Nova Cotacao", htmlmessage, true, null, null);
 
             }
             catch (Exception ex)
@@ -258,6 +269,11 @@ namespace PortalFornecedor.Noventa.Application
 
             cotacaoResponse.Executado = true;
             cotacaoResponse.MensagemRetorno = "Cotação Cadastrada com Sucesso!";
+
+            _logger.LogInformation("Finalizando o método   " +
+                    $"{nameof(AdicionarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+
             return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
         }
 
@@ -272,7 +288,6 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Iniciando o método   " +
                   $"{nameof(AtualizarCotacaoAsync)}  " +
                   "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
-
 
                 var dadosCotacao = AtualizarDadosCotacao(cotacaoRequest.Fornecedor_Id,
                                                          cotacaoRequest.Motivo_Id,
@@ -600,6 +615,129 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                     $"{nameof(ListarCotacaoAsync)}  " +
                     "com os seguintes parâmetros: {Id}", Id);
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro na execução do método " +
+                $"{nameof(ListarCotacaoAsync)}   " +
+                " Com o erro = " + ex.Message);
+
+                cotacaoResponse.Executado = false;
+                cotacaoResponse.MensagemRetorno = "Não foi possível consultar esta cotação!";
+            }
+
+            return new Response<CotacaoResponse>(cotacaoResponse, $"ListarCotacao.");
+        }
+
+
+        public async Task<Response<CotacaoResponse>> ListarCotacaoAsync(Guid guid)
+        {
+            int idFornecedor = 0;
+            decimal subTotalItens = 0;
+            CotacaoResponse cotacaoResponse = new CotacaoResponse();
+            List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+
+            try
+            {
+                _logger.LogInformation("Iniciando o método   " +
+                    $"{nameof(ListarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {guid}", guid);
+
+                var cotacao = await _cotacaoRepository.GetAsync(x => x.Guid == guid);
+
+                if (cotacao == null && !cotacao.Any())
+                {
+                    cotacaoResponse.Executado = false;
+                    cotacaoResponse.MensagemRetorno = "Não existe cotação cadastrado no banco de dados";
+                    return new Response<CotacaoResponse>(cotacaoResponse, $"ListarCotacao.");
+                }
+
+                var dadosSolicitante = await _cotacaoDadosSolicitanteServices.ListarDadosSolicitanteAsync(cotacao.FirstOrDefault().IdCotacao);
+
+                var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == cotacao.FirstOrDefault().Id);
+
+                if (materialCotacao.Any())
+                {
+                    foreach (var item in materialCotacao)
+                    {
+                        if (item.SubTotal != null && item.SubTotal > 0)
+                        {
+                            subTotalItens = subTotalItens + item.SubTotal.Value;
+                        }
+                        materialCotacaoList.Add(item);
+                    }
+                }
+
+                cotacaoResponse.listarDadosCotacao = new ListarDadosCotacao();
+                cotacaoResponse.listarDadosCotacao.dadosSolicitante = dadosSolicitante.Data.solicitante;
+
+                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault());
+                cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao.subTotalItens = subTotalItens;
+
+                if (cotacao.FirstOrDefault().OutrasDespesas != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = cotacao.FirstOrDefault().OutrasDespesas.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorFrete != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFrete = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorSeguro != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro = cotacao.FirstOrDefault().ValorSeguro.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorDesconto != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = cotacao.FirstOrDefault().ValorDesconto.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = 0;
+                }
+
+
+                if (!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento))
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = string.Empty;
+                }
+
+                decimal valorFinalCotacao = ((subTotalItens + cotacao.FirstOrDefault().ValorFrete.Value +
+                                             cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro +
+                                             cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas) - (cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto));
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFinalCotacao = valorFinalCotacao;
+
+                cotacaoResponse.Executado = true;
+                cotacaoResponse.MensagemRetorno = "Cotação consultada com sucesso";
+
+                _logger.LogInformation("Finalizando o método   " +
+                    $"{nameof(ListarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {guid}", guid);
 
 
             }
@@ -971,6 +1109,7 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
             cotacao.NomeUsuarioAlteracao = cotacaoRequest.NomeUsuarioAlteracao;
             cotacao.DataAlteracao = cotacaoRequest.DataAlteracao;
+            cotacao.Guid = Guid.NewGuid();
 
             return cotacao;
         }
@@ -1024,6 +1163,7 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
             cotacao.NomeUsuarioAlteracao = cotacaoRequest.NomeUsuarioAlteracao;
             cotacao.DataAlteracao = cotacaoRequest.DataAlteracao;
+            cotacao.Guid = cotacaoRequest.Guid;
 
             return cotacao;
         }
@@ -1288,6 +1428,11 @@ namespace PortalFornecedor.Noventa.Application
             }
         }
 
+        private string WriteMessageNovaCotacao()
+        {
+            string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\nova-cotacao.html"));
+            return html;
+        }
 
         #endregion
 

@@ -10,9 +10,12 @@ namespace PortalFornecedor.Noventa.API.Controllers
     public class CotacaoController : ControllerBase
     {
         private readonly ICotacaoServices _cotacaoServices;
-        public CotacaoController(ICotacaoServices cotacaoServices)
+        private readonly IConfiguration _configuration;
+
+        public CotacaoController(ICotacaoServices cotacaoServices, IConfiguration configuration)
         {
             _cotacaoServices = cotacaoServices;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -25,8 +28,9 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest)
         {
+            var url = _configuration.GetValue<string>("URLCOTACAO");
 
-            var response = await _cotacaoServices.AdicionarCotacaoAsync(cotacaoRequest);
+            var response = await _cotacaoServices.AdicionarCotacaoAsync(cotacaoRequest, url);
 
             if (response.Data.Executado)
             {
@@ -117,6 +121,30 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [Route("ListarCotacaoId")]
         [AllowAnonymous]
         public async Task<IActionResult> ListarCotacaoIdAsync(int Id)
+        {
+
+            var response = await _cotacaoServices.ListarCotacaoAsync(Id);
+
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.listarDadosCotacao);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
+        }
+
+        /// <summary>
+        /// Retornar os dados de uma cotação
+        /// </summary>
+        /// <param name="idCotacao">Identificador da cotação</param>
+        /// <param name="cnpj">CNPJ Fornecedor</param>
+        /// <returns>Retornaros dados de uma cotação</returns>
+        [HttpPost]
+        [Route("ListarCotacaoGuid")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ListarCotacaoIdAsync(Guid Id)
         {
 
             var response = await _cotacaoServices.ListarCotacaoAsync(Id);

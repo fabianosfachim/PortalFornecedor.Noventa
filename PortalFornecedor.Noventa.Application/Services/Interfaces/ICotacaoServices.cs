@@ -12,7 +12,7 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// </summary>
         /// <param name="cotacaoRequest">Objeto contendo os dados para cadastro de uma nova cotação</param>
         /// <returns>Retornar se a cotaçao foi cadastrada no banco de dados</returns>
-        Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest);
+        Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest, string url);
 
         /// <summary>
         /// Atualizar uma cotação para um fornecedor
@@ -45,6 +45,13 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// <param name="Id">Identificador da cotação</param>
         /// <returns> Retornar os dados de uma cotação</returns>
         Task<Response<CotacaoResponse>> ListarCotacaoAsync(int Id);
+
+        /// <summary>
+        /// Retornar os dados de uma cotação
+        /// </summary>
+        /// <param name="guid">Identificador da cotação</param>
+        /// <returns> Retornar os dados de uma cotação</returns>
+        Task<Response<CotacaoResponse>> ListarCotacaoAsync(Guid guid);
 
         /// <summary>
         /// Retornar os dados de uma cotação
