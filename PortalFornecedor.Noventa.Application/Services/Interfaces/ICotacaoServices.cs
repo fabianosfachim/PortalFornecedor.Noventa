@@ -49,6 +49,13 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// <summary>
         /// Retornar os dados de uma cotação
         /// </summary>
+        /// <param name="guid">Identificador da cotação</param>
+        /// <returns> Retornar os dados de uma cotação</returns>
+        Task<Response<CotacaoResponse>> ListarCotacaoAsync(Guid guid);
+
+        /// <summary>
+        /// Retornar os dados de uma cotação
+        /// </summary>
         /// <param name="cotacaoDetalheFiltroRequest">Filtro de Cotação</param>
         /// <returns> Retornar os dados de uma cotação</returns>
         Task<Response<CotacaoDetalheFiltroResponse>> ListarCotacaoAsync(CotacaoDetalheFiltroRequest cotacaoDetalheFiltroRequest);

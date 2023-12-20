@@ -138,6 +138,30 @@ namespace PortalFornecedor.Noventa.API.Controllers
         /// <summary>
         /// Retornar os dados de uma cotação
         /// </summary>
+        /// <param name="idCotacao">Identificador da cotação</param>
+        /// <param name="cnpj">CNPJ Fornecedor</param>
+        /// <returns>Retornaros dados de uma cotação</returns>
+        [HttpPost]
+        [Route("ListarCotacaoGuid")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ListarCotacaoIdAsync(Guid Id)
+        {
+
+            var response = await _cotacaoServices.ListarCotacaoAsync(Id);
+
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.listarDadosCotacao);
+            }
+            else
+            {
+                return BadRequest(response.Data.Executado);
+            }
+        }
+
+        /// <summary>
+        /// Retornar os dados de uma cotação
+        /// </summary>
         /// <param name="cotacaoDetalheFiltroRequest">Filtro cotação fornecedor</param>
         /// <returns>Retornaros dados de uma cotação</returns>
         [HttpPost]

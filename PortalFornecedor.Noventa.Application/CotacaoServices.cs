@@ -289,15 +289,12 @@ namespace PortalFornecedor.Noventa.Application
                   $"{nameof(AtualizarCotacaoAsync)}  " +
                   "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
 
-                var cotacao = await _cotacaoRepository.GetAsync(x => x.Id == cotacaoRequest.Id);
-
                 var dadosCotacao = AtualizarDadosCotacao(cotacaoRequest.Fornecedor_Id,
                                                          cotacaoRequest.Motivo_Id,
                                                          cotacaoRequest.CotacaoStatus_Id,
                                                          cotacaoRequest.CondicoesPagamento_Id,
                                                          cotacaoRequest.Frete_Id,
-                                                         cotacaoRequest,
-                                                         cotacao.FirstOrDefault().Guid);
+                                                         cotacaoRequest);
 
 
                 await _cotacaoRepository.UpdateAsync(dadosCotacao);
@@ -618,6 +615,129 @@ namespace PortalFornecedor.Noventa.Application
                 _logger.LogInformation("Finalizando o método   " +
                     $"{nameof(ListarCotacaoAsync)}  " +
                     "com os seguintes parâmetros: {Id}", Id);
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro na execução do método " +
+                $"{nameof(ListarCotacaoAsync)}   " +
+                " Com o erro = " + ex.Message);
+
+                cotacaoResponse.Executado = false;
+                cotacaoResponse.MensagemRetorno = "Não foi possível consultar esta cotação!";
+            }
+
+            return new Response<CotacaoResponse>(cotacaoResponse, $"ListarCotacao.");
+        }
+
+
+        public async Task<Response<CotacaoResponse>> ListarCotacaoAsync(Guid guid)
+        {
+            int idFornecedor = 0;
+            decimal subTotalItens = 0;
+            CotacaoResponse cotacaoResponse = new CotacaoResponse();
+            List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+
+            try
+            {
+                _logger.LogInformation("Iniciando o método   " +
+                    $"{nameof(ListarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {guid}", guid);
+
+                var cotacao = await _cotacaoRepository.GetAsync(x => x.Guid == guid);
+
+                if (cotacao == null && !cotacao.Any())
+                {
+                    cotacaoResponse.Executado = false;
+                    cotacaoResponse.MensagemRetorno = "Não existe cotação cadastrado no banco de dados";
+                    return new Response<CotacaoResponse>(cotacaoResponse, $"ListarCotacao.");
+                }
+
+                var dadosSolicitante = await _cotacaoDadosSolicitanteServices.ListarDadosSolicitanteAsync(cotacao.FirstOrDefault().IdCotacao);
+
+                var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == cotacao.FirstOrDefault().Id);
+
+                if (materialCotacao.Any())
+                {
+                    foreach (var item in materialCotacao)
+                    {
+                        if (item.SubTotal != null && item.SubTotal > 0)
+                        {
+                            subTotalItens = subTotalItens + item.SubTotal.Value;
+                        }
+                        materialCotacaoList.Add(item);
+                    }
+                }
+
+                cotacaoResponse.listarDadosCotacao = new ListarDadosCotacao();
+                cotacaoResponse.listarDadosCotacao.dadosSolicitante = dadosSolicitante.Data.solicitante;
+
+                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault());
+                cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao.subTotalItens = subTotalItens;
+
+                if (cotacao.FirstOrDefault().OutrasDespesas != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = cotacao.FirstOrDefault().OutrasDespesas.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorFrete != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFrete = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorSeguro != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro = cotacao.FirstOrDefault().ValorSeguro.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro = 0;
+                }
+
+                if (cotacao.FirstOrDefault().ValorDesconto != null)
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = cotacao.FirstOrDefault().ValorDesconto.Value;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto = 0;
+                }
+
+
+                if (!string.IsNullOrEmpty(cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento))
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = cotacaoResponse.listarDadosCotacao.cotacao.NomeCondicaoPagamento;
+                }
+                else
+                {
+                    cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = string.Empty;
+                }
+
+                decimal valorFinalCotacao = ((subTotalItens + cotacao.FirstOrDefault().ValorFrete.Value +
+                                             cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro +
+                                             cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas) - (cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto));
+
+                cotacaoResponse.listarDadosCotacao.resumoCotacao.valorFinalCotacao = valorFinalCotacao;
+
+                cotacaoResponse.Executado = true;
+                cotacaoResponse.MensagemRetorno = "Cotação consultada com sucesso";
+
+                _logger.LogInformation("Finalizando o método   " +
+                    $"{nameof(ListarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {guid}", guid);
 
 
             }
@@ -995,8 +1115,7 @@ namespace PortalFornecedor.Noventa.Application
         }
 
         private Cotacao AtualizarDadosCotacao(int idFornecedor, int idMotivoCotacao, int idStatusCotacao,
-                                              int idFrete, int idCondicaoPagamento, AtualizarCotacaoRequest cotacaoRequest,
-                                              Guid guid)
+                                              int idFrete, int idCondicaoPagamento, AtualizarCotacaoRequest cotacaoRequest)
         {
             Cotacao cotacao = new Cotacao();
 
@@ -1044,7 +1163,7 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
             cotacao.NomeUsuarioAlteracao = cotacaoRequest.NomeUsuarioAlteracao;
             cotacao.DataAlteracao = cotacaoRequest.DataAlteracao;
-            cotacao.Guid = guid;
+            cotacao.Guid = cotacaoRequest.Guid;
 
             return cotacao;
         }
