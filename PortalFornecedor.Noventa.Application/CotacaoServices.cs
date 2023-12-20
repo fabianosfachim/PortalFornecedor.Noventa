@@ -6,6 +6,7 @@ using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Data.Repositories.Entities;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
+using System;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -20,6 +21,7 @@ namespace PortalFornecedor.Noventa.Application
         private readonly IfreteServices _ifreteServices;
         private readonly ICotacaoRepository _cotacaoRepository;
         private readonly IMaterialCotacaoRepository _materialCotacaoRepository;
+        private readonly ILoginRepository _loginRepository;
 
         public CotacaoServices(ILogger<CotacaoServices> logger,
                                IFornecedorServices fornecedorServices,
@@ -29,7 +31,8 @@ namespace PortalFornecedor.Noventa.Application
                                ICondicaoPagamentoServices condicaoPagamentoServices,
                                IfreteServices ifreteServices,
                                ICotacaoRepository cotacaoRepository,
-                               IMaterialCotacaoRepository materialCotacaoRepository)
+                               IMaterialCotacaoRepository materialCotacaoRepository,
+                               ILoginRepository loginRepository)
         {
             _logger = logger;
             _fornecedorServices = fornecedorServices;
@@ -40,9 +43,10 @@ namespace PortalFornecedor.Noventa.Application
             _ifreteServices = ifreteServices;
             _cotacaoRepository = cotacaoRepository;
             _materialCotacaoRepository = materialCotacaoRepository;
+            _loginRepository = loginRepository;
         }
 
-        public async Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest)
+        public async Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest, string url)
         {
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
             int idFornecedor = 0;
@@ -53,6 +57,7 @@ namespace PortalFornecedor.Noventa.Application
             int idCotacaoDadosSolicitante = 0;
             int i = 0;
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            Cotacao dadosCotacao =  new Cotacao();
 
             try
             {
@@ -201,13 +206,13 @@ namespace PortalFornecedor.Noventa.Application
                     return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
                 }
 
-                var dadosCotacao = PreencherDadosCotacao(idFornecedor,
-                                                         idMotivoCotacao,
-                                                         idStatusCotacao,
-                                                         0,
-                                                         0,
-                                                         0,
-                                                         cotacaoRequest);
+                dadosCotacao = PreencherDadosCotacao(idFornecedor,
+                                                     idMotivoCotacao,
+                                                     idStatusCotacao,
+                                                     0,
+                                                     0,
+                                                     0,
+                                                     cotacaoRequest);
 
                 var idCotacao = await _cotacaoRepository.GetAsync(x => x.IdCotacao == cotacaoRequest.ERPCotacao_Id && x.Fornecedor_Id == idFornecedor);
 
@@ -240,9 +245,15 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
 
-                _logger.LogInformation("Finalizando o método   " +
-                    $"{nameof(AdicionarCotacaoAsync)}  " +
-                    "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+                var dadosAcesso = await _fornecedorServices.ListarDadosFornecedorAsync(cotacaoRequest.CNPJ);
+                var dadosLogin = _loginRepository.GetById(dadosAcesso.Data.fornecedor.Id);
+
+                var htmlmessage = WriteMessageNovaCotacao();
+                var link = url + dadosCotacao.Guid;
+
+                htmlmessage = htmlmessage.Replace("@nome", dadosAcesso.Data.fornecedor.RazaoSocial).Replace("@link", link);
+
+                Utils.EnviarEmail(dadosLogin.Email, "Nova Cotacao", htmlmessage, true, null, null);
 
             }
             catch (Exception ex)
@@ -258,6 +269,11 @@ namespace PortalFornecedor.Noventa.Application
 
             cotacaoResponse.Executado = true;
             cotacaoResponse.MensagemRetorno = "Cotação Cadastrada com Sucesso!";
+
+            _logger.LogInformation("Finalizando o método   " +
+                    $"{nameof(AdicionarCotacaoAsync)}  " +
+                    "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+
             return new Response<CotacaoResponse>(cotacaoResponse, $"Adicionar Cotacao.");
         }
 
@@ -273,13 +289,15 @@ namespace PortalFornecedor.Noventa.Application
                   $"{nameof(AtualizarCotacaoAsync)}  " +
                   "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
 
+                var cotacao = await _cotacaoRepository.GetAsync(x => x.Id == cotacaoRequest.Id);
 
                 var dadosCotacao = AtualizarDadosCotacao(cotacaoRequest.Fornecedor_Id,
                                                          cotacaoRequest.Motivo_Id,
                                                          cotacaoRequest.CotacaoStatus_Id,
                                                          cotacaoRequest.CondicoesPagamento_Id,
                                                          cotacaoRequest.Frete_Id,
-                                                         cotacaoRequest);
+                                                         cotacaoRequest,
+                                                         cotacao.FirstOrDefault().Guid);
 
 
                 await _cotacaoRepository.UpdateAsync(dadosCotacao);
@@ -971,12 +989,14 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
             cotacao.NomeUsuarioAlteracao = cotacaoRequest.NomeUsuarioAlteracao;
             cotacao.DataAlteracao = cotacaoRequest.DataAlteracao;
+            cotacao.Guid = Guid.NewGuid();
 
             return cotacao;
         }
 
         private Cotacao AtualizarDadosCotacao(int idFornecedor, int idMotivoCotacao, int idStatusCotacao,
-                                              int idFrete, int idCondicaoPagamento, AtualizarCotacaoRequest cotacaoRequest)
+                                              int idFrete, int idCondicaoPagamento, AtualizarCotacaoRequest cotacaoRequest,
+                                              Guid guid)
         {
             Cotacao cotacao = new Cotacao();
 
@@ -1024,6 +1044,7 @@ namespace PortalFornecedor.Noventa.Application
             cotacao.DataCadastro = cotacaoRequest.DataCadastro;
             cotacao.NomeUsuarioAlteracao = cotacaoRequest.NomeUsuarioAlteracao;
             cotacao.DataAlteracao = cotacaoRequest.DataAlteracao;
+            cotacao.Guid = guid;
 
             return cotacao;
         }
@@ -1288,6 +1309,11 @@ namespace PortalFornecedor.Noventa.Application
             }
         }
 
+        private string WriteMessageNovaCotacao()
+        {
+            string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\nova-cotacao.html"));
+            return html;
+        }
 
         #endregion
 

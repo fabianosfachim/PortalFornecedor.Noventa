@@ -25,6 +25,7 @@ namespace PortalFornecedor.Noventa.Domain.Entities
         public DateTime DataCadastro { get; set; }
         public string? NomeUsuarioAlteracao { get; set; }
         public DateTime? DataAlteracao { get; set; }
+        public Guid Guid { get; set; }
 
     }
 }

@@ -10,9 +10,12 @@ namespace PortalFornecedor.Noventa.API.Controllers
     public class CotacaoController : ControllerBase
     {
         private readonly ICotacaoServices _cotacaoServices;
-        public CotacaoController(ICotacaoServices cotacaoServices)
+        private readonly IConfiguration _configuration;
+
+        public CotacaoController(ICotacaoServices cotacaoServices, IConfiguration configuration)
         {
             _cotacaoServices = cotacaoServices;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -25,8 +28,9 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest)
         {
+            var url = _configuration.GetValue<string>("URLCOTACAO");
 
-            var response = await _cotacaoServices.AdicionarCotacaoAsync(cotacaoRequest);
+            var response = await _cotacaoServices.AdicionarCotacaoAsync(cotacaoRequest, url);
 
             if (response.Data.Executado)
             {
