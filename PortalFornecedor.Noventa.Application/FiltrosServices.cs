@@ -161,11 +161,13 @@ namespace PortalFornecedor.Noventa.Application
                                 if (DadosStatus.Data.StatusDados.Id != 1)
                                 {
                                     ListaAtividadesRecentesDashBoard objListaAtividadesRecentesDashBoard = new ListaAtividadesRecentesDashBoard();
+                                    
                                     objListaAtividadesRecentesDashBoard.Id = item.Id;
                                     objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome;
                                     objListaAtividadesRecentesDashBoard.localEntrega = dadosSolicitante.Data.solicitante.Cidade + " (" + dadosSolicitante.Data.solicitante.Estado + ")";
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
                                     objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.StatusDados.NomeStatus;
+                                    objListaAtividadesRecentesDashBoard.DataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
 
                                     listaAtividadesRecentesDashBoard.Add(objListaAtividadesRecentesDashBoard);
                                 }

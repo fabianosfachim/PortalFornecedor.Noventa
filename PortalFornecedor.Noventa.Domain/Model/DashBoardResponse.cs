@@ -31,5 +31,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public string localEntrega { get; set; }
         public DateTime dataEntrega { get; set; }
         public string acao { get; set; }
+        public DateTime DataSolicitacao { get; set; }
     }
 }
