@@ -812,26 +812,33 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.statusId != null)
                     {
-                        
-                        if (cotacaoDetalheFiltroRequest.statusId == DadosStatus.Data.StatusDados.Id)
+                        foreach(var itemStatus in cotacaoDetalheFiltroRequest.statusId)
                         {
-                            retornoStatus = true;
-                        }
-                        else
-                        {
-                            retornoStatus = false;
+                            if (itemStatus.statusId.Value == DadosStatus.Data.StatusDados.Id)
+                            {
+                                retornoStatus = true;
+                            }
+                            else
+                            {
+                                retornoStatus = false;
+                                break;
+                            }
                         }
                     }
 
                     if (cotacaoDetalheFiltroRequest.motivoId != null)
                     {
-                        if (cotacaoDetalheFiltroRequest.motivoId == DadosMotivo.Data.MotivoDados.Id)
+                        foreach(var itemMotivo in cotacaoDetalheFiltroRequest.motivoId)
                         {
-                            retornoMotivo = true;
-                        }
-                        else
-                        {
-                            retornoStatus = false;
+                            if (itemMotivo.motivoId == DadosMotivo.Data.MotivoDados.Id)
+                            {
+                                retornoMotivo = true;
+                            }
+                            else
+                            {
+                                retornoStatus = false;
+                                break;
+                            }
                         }
                     }
 
