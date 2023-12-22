@@ -784,6 +784,11 @@ namespace PortalFornecedor.Noventa.Application
 
                 foreach (var item in cotacao)
                 {
+                    retornoStatus = true;
+                    retornoMotivo = true;
+                    retornoPeriodo = true;
+                    controleStatus = false;
+                    controleMotivo = false;
 
                     var dadosSolicitante = await _cotacaoDadosSolicitanteServices.ListarDadosSolicitanteAsync(item.IdCotacao);
 
