@@ -40,7 +40,10 @@ namespace PortalFornecedor.Noventa.Application
                 {
                 var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
                 fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
-            
+                if(fornecedorRequest.fornecedor.InscricaoEstadual != null)
+                {
+                    fornecedorRequest.fornecedor.InscricaoEstadual.Replace(".", "").Replace("/", "");
+                }
                 if(fornecedorRequest.fornecedor.RazaoSocial == "Não se aplica")
                 {
                     fornecedorRequest.fornecedor.RazaoSocial = dadosAcessoUsuario.Nome;

@@ -53,5 +53,36 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Listar o cadastro de um fornecedor no portal pelo número de identificação do fornecedor
+        /// </summary>
+        /// <param name="id">Número de identificação do fornecedor</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("ListarCadastroFornecedor")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ListarCadastroFornecedor(int id)
+        {
+            try
+            {
+                HttpContext.Response.ContentType = "application/json";
+
+                var response = await _fornecedorServices.ListarDadosFornecedorAsync(id);
+
+                if (response.Data.Executado)
+                {
+                    return Ok(response.Data.fornecedor);
+                }
+                else
+                {
+                    return BadRequest(response.Data.MensagemRetorno);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
