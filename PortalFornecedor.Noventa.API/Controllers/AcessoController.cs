@@ -197,11 +197,11 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("AtualizarPassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync(string email, string password)
+        public async Task<IActionResult> AtualizarCadastroLoginSistemaAsync([FromBody] LoginDto input)
         {
             try
             {
-                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(Guid.Parse(email), password);
+                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(Guid.Parse(input.Email), input.Password);
 
                 if (response.Data.Executado)
                 {
