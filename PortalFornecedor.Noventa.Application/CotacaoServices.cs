@@ -814,15 +814,15 @@ namespace PortalFornecedor.Noventa.Application
                     {
                         foreach(var itemStatus in cotacaoDetalheFiltroRequest.statusId)
                         {
-                            if (itemStatus.statusId.Value == DadosStatus.Data.StatusDados.Id)
-                            {
-                                retornoStatus = true;
-                            }
-                            else
-                            {
-                                retornoStatus = false;
-                                break;
-                            }
+                            //if (itemStatus.statusId.Value == DadosStatus.Data.StatusDados.Id)
+                            //{
+                            //    retornoStatus = true;
+                            //}
+                            //else
+                            //{
+                            //    retornoStatus = false;
+                            //    break;
+                            //}
                         }
                     }
 
@@ -830,15 +830,15 @@ namespace PortalFornecedor.Noventa.Application
                     {
                         foreach(var itemMotivo in cotacaoDetalheFiltroRequest.motivoId)
                         {
-                            if (itemMotivo.motivoId == DadosMotivo.Data.MotivoDados.Id)
-                            {
-                                retornoMotivo = true;
-                            }
-                            else
-                            {
-                                retornoStatus = false;
-                                break;
-                            }
+                            //if (itemMotivo.motivoId == DadosMotivo.Data.MotivoDados.Id)
+                            //{
+                            //    retornoMotivo = true;
+                            //}
+                            //else
+                            //{
+                            //    retornoStatus = false;
+                            //    break;
+                            //}
                         }
                     }
 
