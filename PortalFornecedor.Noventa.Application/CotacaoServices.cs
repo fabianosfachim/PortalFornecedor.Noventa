@@ -823,7 +823,7 @@ namespace PortalFornecedor.Noventa.Application
                             }
                         }
                         
-                        if (retornoStatus == false)
+                        if (controleStatus == false)
                         {
                             retornoStatus = false;
                         }
