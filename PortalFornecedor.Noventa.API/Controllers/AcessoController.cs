@@ -91,7 +91,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         /// </summary>
         /// <param name="idLogin">Identificador do login do cadastro do fornecedor</param>
         /// <returns>Retornar a desativação do cadastro do fornecedor</returns>
-        [HttpPost]
+        [HttpGet]
         [Route("AtivarAcesso")]
         [AllowAnonymous]
         public async Task<IActionResult> AtivarCadastroLoginSistemaAsync(Guid idUsuario)
