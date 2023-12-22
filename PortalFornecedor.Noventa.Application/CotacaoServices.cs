@@ -761,9 +761,11 @@ namespace PortalFornecedor.Noventa.Application
             List<ListaFiltroCotacao> listaFiltroCotacao = new List<ListaFiltroCotacao>();
 
             bool retornoSolicitante = true;
-            bool retornoStatus = false;
-            bool retornoMotivo = false;
+            bool retornoStatus = true;
+            bool retornoMotivo = true;
             bool retornoPeriodo = true;
+            bool controleStatus = false;
+            bool controleMotivo = false;
 
             try
             {
@@ -816,9 +818,14 @@ namespace PortalFornecedor.Noventa.Application
                         {
                             if (itemStatus == DadosStatus.Data.StatusDados.Id)
                             {
-                                retornoStatus = true;
+                                controleStatus = true;
                                 break;
                             }
+                        }
+                        
+                        if (retornoStatus == false)
+                        {
+                            retornoStatus = false;
                         }
                     }
 
@@ -828,9 +835,14 @@ namespace PortalFornecedor.Noventa.Application
                         {
                             if (itemMotivo == DadosMotivo.Data.MotivoDados.Id)
                             {
-                                retornoMotivo = true;
+                                controleMotivo = true;
                                 break;
                             }
+                        }
+
+                        if (controleMotivo == false)
+                        {
+                            retornoMotivo = false;
                         }
                     }
 
