@@ -16,7 +16,7 @@ namespace PortalFornecedor.Noventa.Domain.Entities
         public decimal? PercentualIpi { get; set; }
         public decimal? ValorIpi { get; set; }
         public decimal? PercentualIcms { get; set; }
-        public DateTime? PrazoEntrega { get; set; }
+        public int? PrazoEntrega { get; set; }
         public string? Marca { get; set; }
         public decimal? SubTotal { get; set; }
         public bool Ativo { get; set; }
