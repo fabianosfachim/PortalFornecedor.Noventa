@@ -761,8 +761,8 @@ namespace PortalFornecedor.Noventa.Application
             List<ListaFiltroCotacao> listaFiltroCotacao = new List<ListaFiltroCotacao>();
 
             bool retornoSolicitante = true;
-            bool retornoStatus = true;
-            bool retornoMotivo = true;
+            bool retornoStatus = false;
+            bool retornoMotivo = false;
             bool retornoPeriodo = true;
 
             try
@@ -814,15 +814,11 @@ namespace PortalFornecedor.Noventa.Application
                     {
                         foreach(var itemStatus in cotacaoDetalheFiltroRequest.statusId)
                         {
-                            //if (itemStatus.statusId.Value == DadosStatus.Data.StatusDados.Id)
-                            //{
-                            //    retornoStatus = true;
-                            //}
-                            //else
-                            //{
-                            //    retornoStatus = false;
-                            //    break;
-                            //}
+                            if (itemStatus == DadosStatus.Data.StatusDados.Id)
+                            {
+                                retornoStatus = true;
+                                break;
+                            }
                         }
                     }
 
@@ -830,15 +826,11 @@ namespace PortalFornecedor.Noventa.Application
                     {
                         foreach(var itemMotivo in cotacaoDetalheFiltroRequest.motivoId)
                         {
-                            //if (itemMotivo.motivoId == DadosMotivo.Data.MotivoDados.Id)
-                            //{
-                            //    retornoMotivo = true;
-                            //}
-                            //else
-                            //{
-                            //    retornoStatus = false;
-                            //    break;
-                            //}
+                            if (itemMotivo == DadosMotivo.Data.MotivoDados.Id)
+                            {
+                                retornoMotivo = true;
+                                break;
+                            }
                         }
                     }
 
