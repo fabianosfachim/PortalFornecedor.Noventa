@@ -247,11 +247,12 @@ namespace PortalFornecedor.Noventa.Application
 
                 var dadosAcesso = await _fornecedorServices.ListarDadosFornecedorAsync(cotacaoRequest.CNPJ);
                 var dadosLogin = _loginRepository.GetById(dadosAcesso.Data.fornecedor.Id);
+                var dadosSolicitante = await _cotacaoDadosSolicitanteServices.ListarDadosSolicitanteAsync(cotacaoRequest.ERPCotacao_Id);
 
                 var htmlmessage = WriteMessageNovaCotacao();
                 var link = url + dadosCotacao.Guid;
 
-                htmlmessage = htmlmessage.Replace("@nome", dadosAcesso.Data.fornecedor.RazaoSocial).Replace("@link", link);
+                htmlmessage = htmlmessage.Replace("@nome", dadosAcesso.Data.fornecedor.RazaoSocial).Replace("@link", link).Replace("@RazaoSocial", dadosSolicitante.Data.solicitante.Nome);
 
                 Utils.EnviarEmail(dadosLogin.Email, "Nova Cotacao", htmlmessage, true, null, null);
 
@@ -299,8 +300,6 @@ namespace PortalFornecedor.Noventa.Application
 
                 await _cotacaoRepository.UpdateAsync(dadosCotacao);
 
-                AtualizarStatusCotacao(cotacaoRequest.CotacaoStatus_Id, cotacaoRequest.ERPCotacao_Id, 2);
-
                 if (cotacaoRequest.MaterialCotacao != null && cotacaoRequest.MaterialCotacao.Any())
                 {
                     foreach (var item in cotacaoRequest.MaterialCotacao)
@@ -319,6 +318,8 @@ namespace PortalFornecedor.Noventa.Application
                         await _materialCotacaoRepository.UpdateAsync(item);
                     }
                 }
+
+                AtualizarStatusCotacao(cotacaoRequest.CotacaoStatus_Id, cotacaoRequest.ERPCotacao_Id, 2);
 
                 _logger.LogInformation("Finalizar o método   " +
                 $"{nameof(AtualizarCotacaoAsync)}  " +
