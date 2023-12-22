@@ -26,6 +26,8 @@ CREATE TABLE [dbo].[fornecedor](
 	[DataCadastro] [datetime] NOT NULL,
 	[NomeUsuarioAlteracao] [varchar](50) NULL,
 	[DataAlteracao] [datetime] NULL,
+	[Telefone] [varchar](20) NOT NULL,
+	[InscricaoEstadual] [varchar](50) NULL,
  CONSTRAINT [PK_tb_cliente] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
