@@ -40,12 +40,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tabelas", "Tabelas", "{DD02
 		07 - Condicao_Pagamento.sql = 07 - Condicao_Pagamento.sql
 		08- Cotacao_Status.sql = 08- Cotacao_Status.sql
 		09 - Cotacao_Motivo.sql = 09 - Cotacao_Motivo.sql
-		10 - Cotacao_Frete.sql = 10 - Cotacao_Frete.sql
-		11- Cotacao_Status_Pagamento.sql = 11- Cotacao_Status_Pagamento.sql
-		12 - Cotacao_Dados_Solicitante.sql = 12 - Cotacao_Dados_Solicitante.sql
-		13- Cotacao.sql = 13- Cotacao.sql
-		14- Material_Cotacao.sql = 14- Material_Cotacao.sql
-		15- Recuperar_Dados_Acesso.sql = 15- Recuperar_Dados_Acesso.sql
+		10- Cotacao_Status_Pagamento.sql = 10- Cotacao_Status_Pagamento.sql
+		11 - Cotacao_Dados_Solicitante.sql = 11 - Cotacao_Dados_Solicitante.sql
+		12- Cotacao.sql = 12- Cotacao.sql
+		13- Material_Cotacao.sql = 13- Material_Cotacao.sql
+		14- Recuperar_Dados_Acesso.sql = 14- Recuperar_Dados_Acesso.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoredProcedure", "StoredProcedure", "{E1837766-BEAE-4819-A29A-D4F7B659E31C}"
