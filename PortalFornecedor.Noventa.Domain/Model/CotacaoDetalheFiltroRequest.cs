@@ -10,6 +10,7 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public List<int>? motivoId { get; set; }
         public DateTime? dataInicio { get; set; }
         public DateTime? dataTermino { get; set; }
+        public int page { get; set; }
 
     }
 

@@ -97,11 +97,14 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<MotivoResponse>(motivoResponse, $"Lista Motivo.");
         }
 
-        public async Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData)
+        public async Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData, int peddingPage, int currentPage)
         {
             DashBoardResponse dashBoardResponse = new DashBoardResponse();
             int CotacoesPendentes = 0;
             int CotacoesEnviadas = 0;
+            int pageLimit = 10;
+
+
             List<ListaCotacoesPendentesDashBoard> listaCotacoesPendentesDashBoards = new List<ListaCotacoesPendentesDashBoard>();
             List<ListaAtividadesRecentesDashBoard> listaAtividadesRecentesDashBoard = new List<ListaAtividadesRecentesDashBoard>();
 
@@ -176,17 +179,30 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
 
-                if(listaCotacoesPendentesDashBoards.Count> 0)
+                if(listaCotacoesPendentesDashBoards.Count > 0)
                 {
-                    dashBoardResponse.listaCotacoesPendentesDashBoards = listaCotacoesPendentesDashBoards;
+                    dashBoardResponse.CotacoesPendentesPageCount = listaCotacoesPendentesDashBoards.Count;
+
+                    dashBoardResponse.listaCotacoesPendentesDashBoards = listaCotacoesPendentesDashBoards
+                        .OrderBy(cot => cot.dataSolicitacao)
+                        .Skip((pageLimit * peddingPage) - pageLimit)
+                        .Take(pageLimit)
+                        .ToList();
                 }
+                
                 dashBoardResponse.CotacoesPendentes = CotacoesPendentes;
                 dashBoardResponse.CotacoesEnviadas = CotacoesEnviadas;
                 dashBoardResponse.OcsAprovadas = 0;
                 dashBoardResponse.OcsFinalizadas = 0;
+
                 if (listaAtividadesRecentesDashBoard.Count > 0)
                 {
-                    dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard;
+                    dashBoardResponse.CotacoesRecentesPageCount = listaAtividadesRecentesDashBoard.Count;
+
+                    dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard
+                        .Skip((pageLimit * currentPage) - pageLimit)
+                        .Take(pageLimit)
+                        .ToList();
                 }
                 dashBoardResponse.Executado = true;
                 dashBoardResponse.MensagemRetorno = "Consulta efetuada com sucesso";
