@@ -804,7 +804,7 @@ namespace PortalFornecedor.Noventa.Application
                     string contato = dadosSolicitante.Data.solicitante.Contato;
 
                     var DadosStatus = _cotacaoStatusServices.ListarCotacaoAsync(item.CotacaoStatus_Id).Result;
-                    string status = DadosStatus.Data.StatusDados.NomeStatus;
+                    string status = DadosStatus.Data.statusDashBoard.NomeStatus;
 
 
                     if (!string.IsNullOrEmpty(cotacaoDetalheFiltroRequest.solicitacao))
@@ -823,7 +823,7 @@ namespace PortalFornecedor.Noventa.Application
                     {
                         foreach(var itemStatus in cotacaoDetalheFiltroRequest.statusId)
                         {
-                            if (itemStatus == DadosStatus.Data.StatusDados.Id)
+                            if (itemStatus == DadosStatus.Data.statusDashBoard.Id)
                             {
                                 controleStatus = true;
                                 break;
@@ -941,7 +941,7 @@ namespace PortalFornecedor.Noventa.Application
             if (cotacaoDetalhe.CotacaoStatus_Id != null)
             {
                 var status = _cotacaoStatusServices.ListarCotacaoAsync(cotacaoDetalhe.CotacaoStatus_Id).Result;
-                cotacaoDetalhe.NomeStatus = status.Data.StatusDados.NomeStatus;
+                cotacaoDetalhe.NomeStatus = status.Data.statusDashBoard.NomeStatus;
             }
 
             cotacaoDetalhe.Vendedor = cotacao.Vendedor;
