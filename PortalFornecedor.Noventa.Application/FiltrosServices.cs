@@ -174,7 +174,7 @@ namespace PortalFornecedor.Noventa.Application
                                     ListaAtividadesRecentesDashBoard objListaAtividadesRecentesDashBoard = new ListaAtividadesRecentesDashBoard();
                                     
                                     objListaAtividadesRecentesDashBoard.Id = item.Id;
-                                    objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome;
+                                    objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome; 
                                     objListaAtividadesRecentesDashBoard.localEntrega = dadosSolicitante.Data.solicitante.Cidade + " (" + dadosSolicitante.Data.solicitante.Estado + ")";
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
                                     objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.statusDashBoard.NomeStatus;
