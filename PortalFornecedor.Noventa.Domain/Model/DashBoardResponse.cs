@@ -33,6 +33,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public DateTime dataEntrega { get; set; }
         public string acao { get; set; }
         public DateTime DataSolicitacao { get; set; }
-        public DateTime DataStatus { get; set; }
+     
     }
 }

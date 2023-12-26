@@ -150,7 +150,7 @@ namespace PortalFornecedor.Noventa.Application
                                     objListaCotacoesPendentesDashBoard.dataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
                                     objListaCotacoesPendentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
 
-                                    var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == item.Id);
+                                    var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == item.Id && x.Ativo == true);
 
                                     if (materialCotacao != null && materialCotacao.Any())
                                     {
@@ -178,9 +178,8 @@ namespace PortalFornecedor.Noventa.Application
                                     objListaAtividadesRecentesDashBoard.localEntrega = dadosSolicitante.Data.solicitante.Cidade + " (" + dadosSolicitante.Data.solicitante.Estado + ")";
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
                                     objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.statusDashBoard.NomeStatus;
-                                    objListaAtividadesRecentesDashBoard.DataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
-                                    objListaAtividadesRecentesDashBoard.DataStatus = DadosStatus.Data.statusDashBoard.DataStatus;
-
+                                    objListaAtividadesRecentesDashBoard.DataSolicitacao = DadosStatus.Data.statusDashBoard.DataStatus;
+                                    
                                     listaAtividadesRecentesDashBoard.Add(objListaAtividadesRecentesDashBoard);
                                 }
                             }
