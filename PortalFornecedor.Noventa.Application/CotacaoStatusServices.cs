@@ -34,7 +34,7 @@ namespace PortalFornecedor.Noventa.Application
                         "com os seguintes parâmetros:  {StatusCotacao} ",
                          StatusCotacao);
 
-                var status = await _statusRepository.GetAsync(x => x.NomeStatus == StatusCotacao);
+                var status = await _statusRepository.GetAsync(x => x.NomeStatus.Trim().ToUpper() == StatusCotacao.Trim().ToUpper());
 
                 if (status != null && status.Any())
                 {
@@ -170,6 +170,7 @@ namespace PortalFornecedor.Noventa.Application
         public async Task<Response<StatusResponse>> ListarCotacaoAsync(int id)
         {
             StatusResponse statusResponse = new StatusResponse();
+            StatusDashBoard statusDashBoard = new StatusDashBoard();
 
             try
             {
@@ -181,7 +182,12 @@ namespace PortalFornecedor.Noventa.Application
 
                 var status = await _statusRepository.GetByIdAsync(statusCotacao.IdStatus);
 
-                statusResponse.StatusDados = status;
+                statusDashBoard.Id = status.Id;
+                statusDashBoard.NomeStatus = status.NomeStatus;
+                statusDashBoard.DataStatus = statusCotacao.DataStatus;
+
+
+                statusResponse.statusDashBoard = statusDashBoard;
                 statusResponse.Executado = true;
                 statusResponse.MensagemRetorno = "Consulta efetuada com sucesso";
 

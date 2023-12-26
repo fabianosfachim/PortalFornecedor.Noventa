@@ -120,16 +120,24 @@ namespace PortalFornecedor.Noventa.Application
 
                         if (dadosSolicitante != null)
                         {
-                            if (ValidarData(DateTime.Parse(dadosSolicitante.Data.solicitante.DataSolicitacao.Value.ToString("yyyy-MM-dd")), idData) == false)
-                            {
-                                continue;
-                            }
-
                             var DadosStatus = _cotacaoStatusServices.ListarCotacaoAsync(item.CotacaoStatus_Id).Result;
 
                             if (DadosStatus != null)
                             {
-                                if (DadosStatus.Data.StatusDados.Id == 1)
+                                if ((ValidarData(DateTime.Parse(dadosSolicitante.Data.solicitante.DataSolicitacao.Value.ToString("yyyy-MM-dd")), idData) == false) && DadosStatus.Data.statusDashBoard.Id == 1)
+                                {
+                                    continue;
+                                }
+                               
+                                if(DadosStatus.Data.statusDashBoard.Id == 2)
+                                {
+                                    if ((ValidarData(DateTime.Parse(DadosStatus.Data.statusDashBoard.DataStatus.ToString("yyyy-MM-dd")), idData) == false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                if (DadosStatus.Data.statusDashBoard.Id == 1)
                                 {
                                     ListaCotacoesPendentesDashBoard objListaCotacoesPendentesDashBoard = new ListaCotacoesPendentesDashBoard();
 
@@ -153,12 +161,12 @@ namespace PortalFornecedor.Noventa.Application
 
                                     listaCotacoesPendentesDashBoards.Add(objListaCotacoesPendentesDashBoard);
                                 }
-                                else if (DadosStatus.Data.StatusDados.Id == 2)
+                                else if (DadosStatus.Data.statusDashBoard.Id == 2)
                                 {
                                     CotacoesEnviadas = CotacoesEnviadas + 1;
                                 }
                                 
-                                if (DadosStatus.Data.StatusDados.Id != 1)
+                                if (DadosStatus.Data.statusDashBoard.Id != 1)
                                 {
                                     ListaAtividadesRecentesDashBoard objListaAtividadesRecentesDashBoard = new ListaAtividadesRecentesDashBoard();
                                     
@@ -166,8 +174,9 @@ namespace PortalFornecedor.Noventa.Application
                                     objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome;
                                     objListaAtividadesRecentesDashBoard.localEntrega = dadosSolicitante.Data.solicitante.Cidade + " (" + dadosSolicitante.Data.solicitante.Estado + ")";
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
-                                    objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.StatusDados.NomeStatus;
+                                    objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.statusDashBoard.NomeStatus;
                                     objListaAtividadesRecentesDashBoard.DataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
+                                    objListaAtividadesRecentesDashBoard.DataStatus = DadosStatus.Data.statusDashBoard.DataStatus;
 
                                     listaAtividadesRecentesDashBoard.Add(objListaAtividadesRecentesDashBoard);
                                 }
