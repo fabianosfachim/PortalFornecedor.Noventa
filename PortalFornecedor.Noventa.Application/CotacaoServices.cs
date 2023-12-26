@@ -46,6 +46,8 @@ namespace PortalFornecedor.Noventa.Application
             _loginRepository = loginRepository;
         }
 
+        int pageLimit = 10;
+
         public async Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest, string url)
         {
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
@@ -757,7 +759,6 @@ namespace PortalFornecedor.Noventa.Application
 
         public async Task<Response<CotacaoDetalheFiltroResponse>> ListarCotacaoAsync(CotacaoDetalheFiltroRequest cotacaoDetalheFiltroRequest)
         {
-
             CotacaoDetalheFiltroResponse cotacaoResponse = new CotacaoDetalheFiltroResponse();
             List<ListaFiltroCotacao> listaFiltroCotacao = new List<ListaFiltroCotacao>();
 
@@ -885,7 +886,13 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
 
-                cotacaoResponse.listaFiltroCotacaos = listaFiltroCotacao;
+                cotacaoResponse.totalPage = listaFiltroCotacao.Count;
+
+                cotacaoResponse.listaFiltroCotacaos = listaFiltroCotacao
+                    .Skip((pageLimit * cotacaoDetalheFiltroRequest.page) - pageLimit)
+                    .Take(pageLimit)
+                    .ToList();
+
                 cotacaoResponse.Executado = true;
                 cotacaoResponse.MensagemRetorno = "Cotação consultada com sucesso";
 

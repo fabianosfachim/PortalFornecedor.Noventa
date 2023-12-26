@@ -8,10 +8,11 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public int OcsAprovadas { get; set; }
         public int OcsFinalizadas { get; set; }
         public List<ListaCotacoesPendentesDashBoard>? listaCotacoesPendentesDashBoards { get; set; }
-
         public List<ListaAtividadesRecentesDashBoard>? listaAtividadesRecentesDashBoards { get; set; }
         public bool Executado { get; set; }
         public string MensagemRetorno { get; set; }
+        public int CotacoesPendentesPageCount { get; set; }
+        public int CotacoesRecentesPageCount { get; set; }
     }
 
     public class ListaCotacoesPendentesDashBoard

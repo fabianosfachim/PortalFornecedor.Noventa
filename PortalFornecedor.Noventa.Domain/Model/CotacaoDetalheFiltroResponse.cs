@@ -5,6 +5,7 @@ namespace PortalFornecedor.Noventa.Domain.Model
     public class CotacaoDetalheFiltroResponse
     {
         public List<ListaFiltroCotacao> listaFiltroCotacaos { get; set; }
+        public int totalPage { get; set; }
         public bool Executado { get; set; }
         public string MensagemRetorno { get; set; }
     }

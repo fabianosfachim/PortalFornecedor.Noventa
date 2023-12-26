@@ -174,11 +174,15 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.listaFiltroCotacaos);
+                return Ok(new
+                {
+                    cotacoes = response.Data.listaFiltroCotacaos,
+                    totalPage = response.Data.totalPage
+                });
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest( new { error = response.Data.Executado });
             }
         }
     }
