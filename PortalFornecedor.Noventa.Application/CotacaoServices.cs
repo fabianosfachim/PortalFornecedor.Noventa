@@ -606,7 +606,13 @@ namespace PortalFornecedor.Noventa.Application
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = string.Empty;
                 }
 
-                decimal valorFinalCotacao = ((subTotalItens + cotacao.FirstOrDefault().ValorFrete.Value +
+                decimal valorFrete = 0;
+                if(cotacao.FirstOrDefault().ValorFrete != null)
+                {
+                    valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
+                }
+
+                decimal valorFinalCotacao = ((subTotalItens + valorFrete +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas) - (cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto));
 
