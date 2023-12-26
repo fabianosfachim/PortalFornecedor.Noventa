@@ -807,7 +807,7 @@ namespace PortalFornecedor.Noventa.Application
 
                     var DadosMotivo = _motivoServices.ListarMotivoAsync(item.Motivo_Id).Result;
                     string motivo = DadosMotivo.Data.MotivoDados.NomeMotivo;
-                    string contato = dadosSolicitante.Data.solicitante.Contato;
+                    string contato = dadosSolicitante.Data.solicitante.Telefone;
 
                     var DadosStatus = _cotacaoStatusServices.ListarCotacaoAsync(item.CotacaoStatus_Id).Result;
                     string status = DadosStatus.Data.statusDashBoard.NomeStatus;

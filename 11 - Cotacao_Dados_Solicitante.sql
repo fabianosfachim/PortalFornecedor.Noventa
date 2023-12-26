@@ -24,6 +24,7 @@ CREATE TABLE [dbo].[cotacao_dados_solicitante](
 	[Estado] [varchar](2) NULL,
 	[Contato] [varchar](20) NULL,
 	[Email] [varchar](50) NULL,
+	[Telefone] [varchar](20) NULL,
  CONSTRAINT [PK_cotacao_dados_solicitante] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
