@@ -383,6 +383,68 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<CotacaoResponse>(cotacaoResponse, $"Atualizar Cotacao.");
         }
 
+        public async  Task<Response<CotacaoResponse>> SalvarPreenchimentoCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest)
+        {
+            CotacaoResponse cotacaoResponse = new CotacaoResponse();
+            List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            int i = 0;
+
+            try
+            {
+                _logger.LogInformation("Iniciando o método   " +
+                  $"{nameof(AtualizarCotacaoAsync)}  " +
+                  "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+
+                var dadosCotacao = AtualizarDadosCotacao(cotacaoRequest.Fornecedor_Id,
+                                                         cotacaoRequest.Motivo_Id,
+                                                         cotacaoRequest.CotacaoStatus_Id,
+                                                         cotacaoRequest.CondicoesPagamento_Id,
+                                                         cotacaoRequest.Frete_Id,
+                                                         cotacaoRequest);
+
+
+                await _cotacaoRepository.UpdateAsync(dadosCotacao);
+
+                if (cotacaoRequest.MaterialCotacao != null && cotacaoRequest.MaterialCotacao.Any())
+                {
+                    foreach (var item in cotacaoRequest.MaterialCotacao)
+                    {
+                        var dadosmaterialCotacao = AtualizarDadosMaterialCotacao(cotacaoRequest, i);
+                        materialCotacaoList.Add(dadosmaterialCotacao);
+                        i = i + 1;
+                    }
+
+                    _logger.LogInformation("Atulaizando os dados de material de cotação no banco de dados   " +
+                         $"{nameof(AdicionarCotacaoAsync)}   " +
+                         "Com o parâmetro {materialCotacaoList}", materialCotacaoList);
+
+                    foreach (var item in materialCotacaoList)
+                    {
+                        await _materialCotacaoRepository.UpdateAsync(item);
+                    }
+                }
+
+                _logger.LogInformation("Finalizar o método   " +
+                $"{nameof(AtualizarCotacaoAsync)}  " +
+                "com os seguintes parâmetros: {cotacaoRequest}", cotacaoRequest);
+
+                cotacaoResponse.Executado = true;
+                cotacaoResponse.MensagemRetorno = "Cotação Alterada com Sucesso!";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro na execução do método " +
+                  $"{nameof(AtualizarCotacaoAsync)}   " +
+                  " Com o erro = " + ex.Message);
+
+                cotacaoResponse.Executado = false;
+                cotacaoResponse.MensagemRetorno = "Não foi possível realizar a alteração do cadastro de cotação!";
+            }
+
+
+            return new Response<CotacaoResponse>(cotacaoResponse, $"Atualizar Cotacao.");
+        }
+
         public async Task<Response<CotacaoResponse>> ListarCotacaoAsync(string idCotacao, string cnpj)
         {
             int idFornecedor = 0;
@@ -432,7 +494,8 @@ namespace PortalFornecedor.Noventa.Application
 
                 cotacaoResponse.listarDadosCotacao = new ListarDadosCotacao();
                 cotacaoResponse.listarDadosCotacao.dadosSolicitante = dadosSolicitante.Data.solicitante;
-                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDadosCotacao(cotacao.FirstOrDefault());
+
+                cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault());
                 cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
@@ -485,7 +548,13 @@ namespace PortalFornecedor.Noventa.Application
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = string.Empty;
                 }
 
-                decimal valorFinalCotacao = ((subTotalItens + cotacao.FirstOrDefault().ValorFrete.Value +
+                decimal valorFrete = 0;
+                if (cotacao.FirstOrDefault().ValorFrete != null)
+                {
+                    valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
+                }
+
+                decimal valorFinalCotacao = ((subTotalItens + valorFrete +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas) - (cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto));
 
@@ -735,7 +804,13 @@ namespace PortalFornecedor.Noventa.Application
                     cotacaoResponse.listarDadosCotacao.resumoCotacao.formaPagamento = string.Empty;
                 }
 
-                decimal valorFinalCotacao = ((subTotalItens + cotacao.FirstOrDefault().ValorFrete.Value +
+                decimal valorFrete = 0;
+                if (cotacao.FirstOrDefault().ValorFrete != null)
+                {
+                    valorFrete = cotacao.FirstOrDefault().ValorFrete.Value;
+                }
+
+                decimal valorFinalCotacao = ((subTotalItens + valorFrete +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.valorSeguro +
                                              cotacaoResponse.listarDadosCotacao.resumoCotacao.OutrasDespesas) - (cotacaoResponse.listarDadosCotacao.resumoCotacao.ValorDesconto));
 
@@ -979,6 +1054,15 @@ namespace PortalFornecedor.Noventa.Application
             cotacaoDetalhe.DataCadastro = cotacao.DataCadastro;
             cotacaoDetalhe.NomeUsuarioAlteracao = cotacao.NomeUsuarioAlteracao;
             cotacaoDetalhe.DataAlteracao = cotacao.DataAlteracao;
+
+            if(DateTime.Now > cotacao.PrazoMaximoCotacao)
+            {
+                cotacaoDetalhe.CotacaoExpirada = true;
+            }
+            else
+            {
+                cotacaoDetalhe.CotacaoExpirada = false;
+            }
 
             return cotacaoDetalhe;
         }

@@ -89,6 +89,30 @@ namespace PortalFornecedor.Noventa.API.Controllers
         }
 
         /// <summary>
+        /// Atualizar uma cotação para um fornecedor durante o preenchimento
+        /// </summary>
+        /// <param name="cotacaoRequest">Objeto contendo os dados para atualização do cadastro de uma cotação</param>
+        /// <returns>Retornar se os dados da cotação foram atualizados</returns>
+        [HttpPost]
+        [Route("SalvarPreenchimentoCotacao")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SalvarPreenchimentoCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest)
+        {
+
+            var response = await _cotacaoServices.SalvarPreenchimentoCotacaoAsync(cotacaoRequest);
+
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.MensagemRetorno);
+            }
+            else
+            {
+                return BadRequest(response.Data.MensagemRetorno);
+            }
+        }
+        
+
+        /// <summary>
         /// Retornar os dados de uma cotação
         /// </summary>
         /// <param name="idCotacao">Identificador da cotação</param>

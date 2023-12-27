@@ -15,11 +15,18 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         Task<Response<CotacaoResponse>> AdicionarCotacaoAsync(CotacaoRequest cotacaoRequest, string url);
 
         /// <summary>
-        /// Atualizar uma cotação para um fornecedor
+        /// Atualizar uma cotação para um fornecedor e mudar o status para enviada
         /// </summary>
         /// <param name="cotacaoRequest">Objeto contendo os dados para atualização do cadastro de uma cotação</param>
         /// <returns>Retornar se os dados da cotação foram atualizados</returns>
         Task<Response<CotacaoResponse>> AtualizarCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest);
+
+        /// <summary>
+        /// Atualizar uma cotação para um fornecedor durante o preenchimento
+        /// </summary>
+        /// <param name="cotacaoRequest">Objeto contendo os dados para atualização do cadastro de uma cotação</param>
+        /// <returns>Retornar se os dados da cotação foram atualizados</returns>
+        Task<Response<CotacaoResponse>> SalvarPreenchimentoCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest);
 
         /// <summary>
         /// Atualizar uma o status da cotação 
