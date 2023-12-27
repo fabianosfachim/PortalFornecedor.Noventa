@@ -38,7 +38,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -61,7 +61,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.MensagemRetorno);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -84,7 +84,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -107,7 +107,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.MensagemRetorno);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
         
@@ -131,7 +131,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.MensagemRetorno);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -155,7 +155,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -179,7 +179,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest(new { msg = response.Data.MensagemRetorno });
             }
         }
 
@@ -206,7 +206,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest( new { error = response.Data.MensagemRetorno });
+                return BadRequest( new { msg = response.Data.MensagemRetorno });
             }
         }
     }

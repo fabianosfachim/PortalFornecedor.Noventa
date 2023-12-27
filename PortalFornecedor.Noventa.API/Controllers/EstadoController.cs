@@ -34,13 +34,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                     return Ok(response.Data.Estados);
                 } else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest( new { msg = response.Data.MensagemRetorno });
                 }
                 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
 
