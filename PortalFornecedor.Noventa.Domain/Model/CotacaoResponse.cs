@@ -48,6 +48,7 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public string? NomeUsuarioAlteracao { get; set; }
         public DateTime? DataAlteracao { get; set; }
         public bool CotacaoExpirada { get; set; }
+        public Guid guid { get; set; }
     }
 
     public class ResumoCotacao
