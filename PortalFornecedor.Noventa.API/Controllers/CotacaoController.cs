@@ -103,7 +103,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.MensagemRetorno);
+                return Ok();
             }
             else
             {
