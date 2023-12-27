@@ -57,7 +57,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.MensagemRetorno);
+                return Ok();
             }
             else
             {
@@ -206,7 +206,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
             }
             else
             {
-                return BadRequest( new { error = response.Data.Executado });
+                return BadRequest( new { error = response.Data.MensagemRetorno });
             }
         }
     }
