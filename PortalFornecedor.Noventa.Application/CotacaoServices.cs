@@ -1064,6 +1064,8 @@ namespace PortalFornecedor.Noventa.Application
                 cotacaoDetalhe.CotacaoExpirada = true;
             }
 
+            cotacaoDetalhe.guid = cotacao.Guid;
+
             return cotacaoDetalhe;
         }
 
