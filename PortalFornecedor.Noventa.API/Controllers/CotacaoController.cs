@@ -50,7 +50,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("AtualizarCotacao")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtualizarCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest)
+        public async Task<IActionResult> AtualizarCotacaoAsync([FromBody] AtualizarCotacaoRequest cotacaoRequest)
         {
 
             var response = await _cotacaoServices.AtualizarCotacaoAsync(cotacaoRequest);
@@ -96,7 +96,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("SalvarPreenchimentoCotacao")]
         [AllowAnonymous]
-        public async Task<IActionResult> SalvarPreenchimentoCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest)
+        public async Task<IActionResult> SalvarPreenchimentoCotacaoAsync([FromBody] AtualizarCotacaoRequest cotacaoRequest)
         {
 
             var response = await _cotacaoServices.SalvarPreenchimentoCotacaoAsync(cotacaoRequest);
