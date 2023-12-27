@@ -1058,11 +1058,11 @@ namespace PortalFornecedor.Noventa.Application
 
             if(DateTime.Now > cotacao.PrazoMaximoCotacao)
             {
-                cotacaoDetalhe.CotacaoExpirada = true;
+                cotacaoDetalhe.CotacaoExpirada = false;
             }
             else
             {
-                cotacaoDetalhe.CotacaoExpirada = false;
+                cotacaoDetalhe.CotacaoExpirada = true;
             }
 
             return cotacaoDetalhe;
