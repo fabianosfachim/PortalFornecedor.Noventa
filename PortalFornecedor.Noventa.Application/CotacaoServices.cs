@@ -970,6 +970,7 @@ namespace PortalFornecedor.Noventa.Application
                 cotacaoResponse.totalPage = listaFiltroCotacao.Count;
 
                 cotacaoResponse.listaFiltroCotacaos = listaFiltroCotacao
+                    .OrderBy(x => x.dataSolicitacao)
                     .Skip((pageLimit * cotacaoDetalheFiltroRequest.page) - pageLimit)
                     .Take(pageLimit)
                     .ToList();
