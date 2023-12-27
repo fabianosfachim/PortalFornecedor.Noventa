@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
+using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Domain.DTO;
 using PortalFornecedor.Noventa.Domain.Model;
 
@@ -43,13 +44,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest(new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
 
@@ -75,13 +76,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest(new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
 
         }
@@ -106,13 +107,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest(new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
 
@@ -142,13 +143,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest(new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
 
         }
@@ -178,13 +179,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest( new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
 
@@ -209,13 +210,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest( new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
 
@@ -241,13 +242,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 }
                 else
                 {
-                    return BadRequest(response.Data.MensagemRetorno);
+                    return BadRequest( new { msg = response.Data.MensagemRetorno });
                 }
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { msg = ex.Message });
             }
         }
     }
