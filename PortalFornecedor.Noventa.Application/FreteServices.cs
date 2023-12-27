@@ -2,7 +2,6 @@
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Data.Interfaces;
-using PortalFornecedor.Noventa.Data.Repositories.Entities;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 
