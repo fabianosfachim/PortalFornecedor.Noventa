@@ -15,5 +15,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public string? Estado { get; set; }
         public string? Contato { get; set; }
         public string? Email { get; set; }
+        public string? Telefone { get; set; }
     }
 }

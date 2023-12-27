@@ -21,7 +21,7 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// Listar o motivo das cotações
         /// </summary>
         /// <returns>Retornar o motivo da cotaçao</returns>
-        Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData);
+        Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData, int peddingPage, int currentPage);
 
 
     }

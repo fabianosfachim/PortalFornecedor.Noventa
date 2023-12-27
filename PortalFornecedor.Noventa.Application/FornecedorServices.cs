@@ -40,7 +40,7 @@ namespace PortalFornecedor.Noventa.Application
                 {
                 var dadosAcessoUsuario = await _loginRepository.GetByIdAsync(fornecedorRequest.fornecedor.Id);
                 fornecedorRequest.fornecedor.CnpjCpf = fornecedorRequest.fornecedor.CnpjCpf.Replace(".", "").Replace("-", "").Replace("/", "").Replace("-","");
-                if(fornecedorRequest.fornecedor.InscricaoEstadual != null)
+                if(fornecedorRequest.fornecedor.InscricaoEstadual != string.Empty)
                 {
                     fornecedorRequest.fornecedor.InscricaoEstadual.Replace(".", "").Replace("/", "");
                 }
@@ -48,7 +48,8 @@ namespace PortalFornecedor.Noventa.Application
                 {
                     fornecedorRequest.fornecedor.RazaoSocial = dadosAcessoUsuario.Nome;
                 }
-                    await _fornecedorRepository.AddAsync(fornecedorRequest.fornecedor);
+
+                await _fornecedorRepository.AddAsync(fornecedorRequest.fornecedor);
 
                 var htmlmessage = WriteMessageAtivacao();
                 var link = url + dadosAcessoUsuario.Guid;

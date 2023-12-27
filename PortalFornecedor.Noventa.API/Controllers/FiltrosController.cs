@@ -57,10 +57,10 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpGet]
         [Route("ListarDadosDashBoard")]
         [AllowAnonymous]
-        public async Task<IActionResult> ListarDadosDashBoardAsync(int idFornecedor, int idData)
+        public async Task<IActionResult> ListarDadosDashBoardAsync(int idFornecedor, int idData, int peddingPage, int currentPage)
         {
 
-            var response = await _filtrosServices.ListarDadosDashBoardAsync(idFornecedor, idData);
+            var response = await _filtrosServices.ListarDadosDashBoardAsync(idFornecedor, idData, peddingPage, currentPage);
 
             HttpContext.Response.ContentType = "application/json";
 

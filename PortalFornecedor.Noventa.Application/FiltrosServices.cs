@@ -97,11 +97,14 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<MotivoResponse>(motivoResponse, $"Lista Motivo.");
         }
 
-        public async Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData)
+        public async Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData, int peddingPage, int currentPage)
         {
             DashBoardResponse dashBoardResponse = new DashBoardResponse();
             int CotacoesPendentes = 0;
             int CotacoesEnviadas = 0;
+            int pageLimit = 10;
+
+
             List<ListaCotacoesPendentesDashBoard> listaCotacoesPendentesDashBoards = new List<ListaCotacoesPendentesDashBoard>();
             List<ListaAtividadesRecentesDashBoard> listaAtividadesRecentesDashBoard = new List<ListaAtividadesRecentesDashBoard>();
 
@@ -120,16 +123,24 @@ namespace PortalFornecedor.Noventa.Application
 
                         if (dadosSolicitante != null)
                         {
-                            if (ValidarData(DateTime.Parse(dadosSolicitante.Data.solicitante.DataSolicitacao.Value.ToString("yyyy-MM-dd")), idData) == false)
-                            {
-                                continue;
-                            }
-
                             var DadosStatus = _cotacaoStatusServices.ListarCotacaoAsync(item.CotacaoStatus_Id).Result;
 
                             if (DadosStatus != null)
                             {
-                                if (DadosStatus.Data.StatusDados.Id == 1)
+                                if ((ValidarData(DateTime.Parse(dadosSolicitante.Data.solicitante.DataSolicitacao.Value.ToString("yyyy-MM-dd")), idData) == false) && DadosStatus.Data.statusDashBoard.Id == 1)
+                                {
+                                    continue;
+                                }
+                               
+                                if(DadosStatus.Data.statusDashBoard.Id == 2)
+                                {
+                                    if ((ValidarData(DateTime.Parse(DadosStatus.Data.statusDashBoard.DataStatus.ToString("yyyy-MM-dd")), idData) == false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                if (DadosStatus.Data.statusDashBoard.Id == 1)
                                 {
                                     ListaCotacoesPendentesDashBoard objListaCotacoesPendentesDashBoard = new ListaCotacoesPendentesDashBoard();
 
@@ -139,7 +150,7 @@ namespace PortalFornecedor.Noventa.Application
                                     objListaCotacoesPendentesDashBoard.dataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
                                     objListaCotacoesPendentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
 
-                                    var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == item.Id);
+                                    var materialCotacao = await _materialCotacaoRepository.GetAsync(x => x.Cotacao_Id == item.Id && x.Ativo == true);
 
                                     if (materialCotacao != null && materialCotacao.Any())
                                     {
@@ -153,22 +164,22 @@ namespace PortalFornecedor.Noventa.Application
 
                                     listaCotacoesPendentesDashBoards.Add(objListaCotacoesPendentesDashBoard);
                                 }
-                                else if (DadosStatus.Data.StatusDados.Id == 2)
+                                else if (DadosStatus.Data.statusDashBoard.Id == 2)
                                 {
                                     CotacoesEnviadas = CotacoesEnviadas + 1;
                                 }
                                 
-                                if (DadosStatus.Data.StatusDados.Id != 1)
+                                if (DadosStatus.Data.statusDashBoard.Id != 1)
                                 {
                                     ListaAtividadesRecentesDashBoard objListaAtividadesRecentesDashBoard = new ListaAtividadesRecentesDashBoard();
                                     
                                     objListaAtividadesRecentesDashBoard.Id = item.Id;
-                                    objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome;
+                                    objListaAtividadesRecentesDashBoard.solicitante = dadosSolicitante.Data.solicitante.Nome; 
                                     objListaAtividadesRecentesDashBoard.localEntrega = dadosSolicitante.Data.solicitante.Cidade + " (" + dadosSolicitante.Data.solicitante.Estado + ")";
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
-                                    objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.StatusDados.NomeStatus;
-                                    objListaAtividadesRecentesDashBoard.DataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
-
+                                    objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.statusDashBoard.NomeStatus;
+                                    objListaAtividadesRecentesDashBoard.DataSolicitacao = DadosStatus.Data.statusDashBoard.DataStatus;
+                                    
                                     listaAtividadesRecentesDashBoard.Add(objListaAtividadesRecentesDashBoard);
                                 }
                             }
@@ -176,17 +187,30 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
 
-                if(listaCotacoesPendentesDashBoards.Count> 0)
+                if(listaCotacoesPendentesDashBoards.Count > 0)
                 {
-                    dashBoardResponse.listaCotacoesPendentesDashBoards = listaCotacoesPendentesDashBoards;
+                    dashBoardResponse.CotacoesPendentesPageCount = listaCotacoesPendentesDashBoards.Count;
+
+                    dashBoardResponse.listaCotacoesPendentesDashBoards = listaCotacoesPendentesDashBoards
+                        .OrderBy(cot => cot.dataSolicitacao)
+                        .Skip((pageLimit * peddingPage) - pageLimit)
+                        .Take(pageLimit)
+                        .ToList();
                 }
+                
                 dashBoardResponse.CotacoesPendentes = CotacoesPendentes;
                 dashBoardResponse.CotacoesEnviadas = CotacoesEnviadas;
                 dashBoardResponse.OcsAprovadas = 0;
                 dashBoardResponse.OcsFinalizadas = 0;
+
                 if (listaAtividadesRecentesDashBoard.Count > 0)
                 {
-                    dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard;
+                    dashBoardResponse.CotacoesRecentesPageCount = listaAtividadesRecentesDashBoard.Count;
+
+                    dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard
+                        .Skip((pageLimit * currentPage) - pageLimit)
+                        .Take(pageLimit)
+                        .ToList();
                 }
                 dashBoardResponse.Executado = true;
                 dashBoardResponse.MensagemRetorno = "Consulta efetuada com sucesso";

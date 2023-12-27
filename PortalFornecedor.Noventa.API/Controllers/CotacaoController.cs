@@ -50,7 +50,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [HttpPost]
         [Route("AtualizarCotacao")]
         [AllowAnonymous]
-        public async Task<IActionResult> AtualizarCotacaoAsync(AtualizarCotacaoRequest cotacaoRequest)
+        public async Task<IActionResult> AtualizarCotacaoAsync([FromBody] AtualizarCotacaoRequest cotacaoRequest)
         {
 
             var response = await _cotacaoServices.AtualizarCotacaoAsync(cotacaoRequest);
@@ -87,6 +87,30 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 return BadRequest(response.Data.Executado);
             }
         }
+
+        /// <summary>
+        /// Atualizar uma cotação para um fornecedor durante o preenchimento
+        /// </summary>
+        /// <param name="cotacaoRequest">Objeto contendo os dados para atualização do cadastro de uma cotação</param>
+        /// <returns>Retornar se os dados da cotação foram atualizados</returns>
+        [HttpPost]
+        [Route("SalvarPreenchimentoCotacao")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SalvarPreenchimentoCotacaoAsync([FromBody] AtualizarCotacaoRequest cotacaoRequest)
+        {
+
+            var response = await _cotacaoServices.SalvarPreenchimentoCotacaoAsync(cotacaoRequest);
+
+            if (response.Data.Executado)
+            {
+                return Ok(response.Data.MensagemRetorno);
+            }
+            else
+            {
+                return BadRequest(response.Data.MensagemRetorno);
+            }
+        }
+        
 
         /// <summary>
         /// Retornar os dados de uma cotação
@@ -174,11 +198,15 @@ namespace PortalFornecedor.Noventa.API.Controllers
 
             if (response.Data.Executado)
             {
-                return Ok(response.Data.listaFiltroCotacaos);
+                return Ok(new
+                {
+                    cotacoes = response.Data.listaFiltroCotacaos,
+                    totalPage = response.Data.totalPage
+                });
             }
             else
             {
-                return BadRequest(response.Data.Executado);
+                return BadRequest( new { error = response.Data.Executado });
             }
         }
     }
