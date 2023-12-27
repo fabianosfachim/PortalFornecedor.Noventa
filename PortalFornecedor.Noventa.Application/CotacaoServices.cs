@@ -1055,7 +1055,7 @@ namespace PortalFornecedor.Noventa.Application
             cotacaoDetalhe.NomeUsuarioAlteracao = cotacao.NomeUsuarioAlteracao;
             cotacaoDetalhe.DataAlteracao = cotacao.DataAlteracao;
 
-            if(DateTime.Now > cotacao.PrazoMaximoCotacao)
+            if(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm")) > DateTime.Parse(cotacao.PrazoMaximoCotacao.Value.ToString("yyyy-MM-dd HH:mm")))
             {
                 cotacaoDetalhe.CotacaoExpirada = false;
             }
