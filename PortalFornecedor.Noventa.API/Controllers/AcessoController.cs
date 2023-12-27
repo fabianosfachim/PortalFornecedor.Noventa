@@ -36,7 +36,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 loginRequest.Password = parametro;
 
                 var response = await _loginServices.VerificarForcaSenhaAsync(loginRequest);
-                
+
                 if (response.Data.Executado)
                 {
                     return Ok();
@@ -77,13 +77,13 @@ namespace PortalFornecedor.Noventa.API.Controllers
                 {
                     return BadRequest(response.Data.MensagemRetorno);
                 }
-                
+
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            
+
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace PortalFornecedor.Noventa.API.Controllers
         {
             try
             {
-                 var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(Guid.Parse(input.Email), input.Password);
+                var response = await _loginServices.AtualizarCadastroLoginSistemaAsync(Guid.Parse(input.Email), input.Password);
 
                 if (response.Data.Executado)
                 {
