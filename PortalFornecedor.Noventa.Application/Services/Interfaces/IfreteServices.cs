@@ -38,5 +38,6 @@ namespace PortalFornecedor.Noventa.Application.Services.Interfaces
         /// <param name="Id">Identificador do Frete</param>
         /// <param name="IdCotacao">Identificador da cotação</param>
         Task<Response<FreteResponse>> ListarFreteAsync(int id , string IdCotacao);
+
     }
 }
