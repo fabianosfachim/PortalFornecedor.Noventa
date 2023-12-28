@@ -193,7 +193,6 @@ namespace PortalFornecedor.Noventa.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ListarCotacaoAsync(CotacaoDetalheFiltroRequest cotacaoDetalheFiltroRequest)
         {
-
             var response = await _cotacaoServices.ListarCotacaoAsync(cotacaoDetalheFiltroRequest);
 
             if (response.Data.Executado)
