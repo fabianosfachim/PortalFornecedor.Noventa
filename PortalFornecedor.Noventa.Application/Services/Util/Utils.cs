@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Data.SqlClient;
+using System.Data;
+using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
@@ -102,5 +104,31 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
            
         }
 
+        public static DataTable GetDados(SqlCommand cmd, string strConnString)
+        {
+            DataTable dt = new DataTable();
+            
+            SqlConnection con = new SqlConnection(strConnString);
+            SqlDataAdapter sda = new SqlDataAdapter();
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+            try
+            {
+                con.Open();
+                sda.SelectCommand = cmd;
+                sda.Fill(dt);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+                sda.Dispose();
+                con.Dispose();
+            }
+        }
     }
 }

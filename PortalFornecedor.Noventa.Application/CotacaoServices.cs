@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
 using PortalFornecedor.Noventa.Application.Services.Util;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
@@ -6,6 +8,8 @@ using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 using System;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -21,6 +25,7 @@ namespace PortalFornecedor.Noventa.Application
         private readonly ICotacaoRepository _cotacaoRepository;
         private readonly IMaterialCotacaoRepository _materialCotacaoRepository;
         private readonly ILoginRepository _loginRepository;
+        private readonly IConfiguration _configuration;
 
         public CotacaoServices(ILogger<CotacaoServices> logger,
                                IFornecedorServices fornecedorServices,
@@ -31,7 +36,8 @@ namespace PortalFornecedor.Noventa.Application
                                IfreteServices ifreteServices,
                                ICotacaoRepository cotacaoRepository,
                                IMaterialCotacaoRepository materialCotacaoRepository,
-                               ILoginRepository loginRepository)
+                               ILoginRepository loginRepository,
+                               IConfiguration configuration)
         {
             _logger = logger;
             _fornecedorServices = fornecedorServices;
@@ -43,6 +49,7 @@ namespace PortalFornecedor.Noventa.Application
             _cotacaoRepository = cotacaoRepository;
             _materialCotacaoRepository = materialCotacaoRepository;
             _loginRepository = loginRepository;
+            _configuration = configuration;
         }
 
         int pageLimit = 10;
@@ -915,13 +922,9 @@ namespace PortalFornecedor.Noventa.Application
 
                     if (cotacaoDetalheFiltroRequest.dataInicio != null && cotacaoDetalheFiltroRequest.dataTermino != null)
                     {
-                        if ((DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")) >= (DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd"))))
-                        && (DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")) <= (DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")))))
-                        {
-                            filtroData = true;
-                        }
-
-                        if(filtroData == false) 
+                        filtroData = verificarDataSolicitacao(dadosSolicitante.Data.solicitante.Id, DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd")), DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")));
+                      
+                        if (filtroData == false)
                         {
                             continue;
                         }
@@ -1602,6 +1605,34 @@ namespace PortalFornecedor.Noventa.Application
         {
             string html = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails\\emails\\nova-cotacao.html"));
             return html;
+        }
+
+        private bool verificarDataSolicitacao(int id, DateTime dataInicio, DateTime dataFinal)
+        {
+            try
+            {
+                var connectionString = _configuration.GetConnectionString("SqlConnection");
+                string strSql = $"SELECT * FROM cotacao_dados_solicitante WHERE DataSolicitacao BETWEEN '{dataInicio.ToString("yyyy-MM-dd")} 00:00' and '{dataFinal.ToString("yyyy-MM-dd")} 23:59' AND id = {id}";
+
+                SqlCommand cmd = new SqlCommand(strSql);
+                cmd.CommandType = CommandType.Text;
+  
+                var retorno = Utils.GetDados(cmd, connectionString);
+
+                if(retorno.Rows.Count > 0) 
+                { 
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro na execução do método " +
+               $"{nameof(ListarCotacaoAsync)}   " +
+               " Com o erro = " + ex.Message);
+                throw;
+            }
         }
 
         #endregion
