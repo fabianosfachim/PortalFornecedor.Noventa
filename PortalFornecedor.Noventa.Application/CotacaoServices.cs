@@ -1156,23 +1156,45 @@ namespace PortalFornecedor.Noventa.Application
         {
             Material_Cotacao materialCotacao = new Material_Cotacao();
 
+            if(cotacaoRequest.MaterialCotacao[indice].Ativo == true)
+            {
+                materialCotacao.Id = cotacaoRequest.MaterialCotacao[indice].Id;
+                materialCotacao.Material_Id = cotacaoRequest.MaterialCotacao[indice].Material_Id;
+                materialCotacao.Descricao = cotacaoRequest.MaterialCotacao[indice].Descricao;
+                materialCotacao.Cotacao_Id = cotacaoRequest.Id;
+                materialCotacao.NomeFabricante = cotacaoRequest.MaterialCotacao[indice].NomeFabricante;
+                materialCotacao.QuantidadeRequisitada = cotacaoRequest.MaterialCotacao[indice].QuantidadeRequisitada;
+                materialCotacao.PrecoUnitario = cotacaoRequest.MaterialCotacao[indice].PrecoUnitario;
+                materialCotacao.PercentualDesconto = cotacaoRequest.MaterialCotacao[indice].PercentualDesconto;
+                materialCotacao.IpiIncluso = cotacaoRequest.MaterialCotacao[indice].IpiIncluso;
+                materialCotacao.PercentualIpi = cotacaoRequest.MaterialCotacao[indice].PercentualIpi;
+                materialCotacao.ValorIpi = cotacaoRequest.MaterialCotacao[indice].ValorIpi;
+                materialCotacao.PercentualIcms = cotacaoRequest.MaterialCotacao[indice].PercentualIcms;
+                materialCotacao.PrazoEntrega = cotacaoRequest.MaterialCotacao[indice].PrazoEntrega;
+                materialCotacao.Marca = cotacaoRequest.MaterialCotacao[indice].Marca;
+                materialCotacao.SubTotal = cotacaoRequest.MaterialCotacao[indice].SubTotal;
+                materialCotacao.Ativo = cotacaoRequest.MaterialCotacao[indice].Ativo;
+            }
+            else
+            {
+                materialCotacao.Id = cotacaoRequest.MaterialCotacao[indice].Id;
+                materialCotacao.Material_Id = cotacaoRequest.MaterialCotacao[indice].Material_Id;
+                materialCotacao.Descricao = cotacaoRequest.MaterialCotacao[indice].Descricao;
+                materialCotacao.Cotacao_Id = cotacaoRequest.Id;
+                materialCotacao.NomeFabricante = cotacaoRequest.MaterialCotacao[indice].NomeFabricante;
+                materialCotacao.QuantidadeRequisitada = cotacaoRequest.MaterialCotacao[indice].QuantidadeRequisitada;
+                materialCotacao.PrecoUnitario = null;
+                materialCotacao.PercentualDesconto = null;
+                materialCotacao.IpiIncluso = null;
+                materialCotacao.PercentualIpi = null;
+                materialCotacao.ValorIpi = null;
+                materialCotacao.PercentualIcms = null;
+                materialCotacao.PrazoEntrega = null;
+                materialCotacao.Marca = null;
+                materialCotacao.SubTotal = null;
+                materialCotacao.Ativo = cotacaoRequest.MaterialCotacao[indice].Ativo;
+            }
 
-            materialCotacao.Id = cotacaoRequest.MaterialCotacao[indice].Id;
-            materialCotacao.Material_Id = cotacaoRequest.MaterialCotacao[indice].Material_Id;
-            materialCotacao.Descricao = cotacaoRequest.MaterialCotacao[indice].Descricao;
-            materialCotacao.Cotacao_Id = cotacaoRequest.Id;
-            materialCotacao.NomeFabricante = cotacaoRequest.MaterialCotacao[indice].NomeFabricante;
-            materialCotacao.QuantidadeRequisitada = cotacaoRequest.MaterialCotacao[indice].QuantidadeRequisitada;
-            materialCotacao.PrecoUnitario = cotacaoRequest.MaterialCotacao[indice].PrecoUnitario;
-            materialCotacao.PercentualDesconto = cotacaoRequest.MaterialCotacao[indice].PercentualDesconto;
-            materialCotacao.IpiIncluso = cotacaoRequest.MaterialCotacao[indice].IpiIncluso;
-            materialCotacao.PercentualIpi = cotacaoRequest.MaterialCotacao[indice].PercentualIpi;
-            materialCotacao.ValorIpi = cotacaoRequest.MaterialCotacao[indice].ValorIpi;
-            materialCotacao.PercentualIcms = cotacaoRequest.MaterialCotacao[indice].PercentualIcms;
-            materialCotacao.PrazoEntrega = cotacaoRequest.MaterialCotacao[indice].PrazoEntrega;
-            materialCotacao.Marca = cotacaoRequest.MaterialCotacao[indice].Marca;
-            materialCotacao.SubTotal = cotacaoRequest.MaterialCotacao[indice].SubTotal;
-            materialCotacao.Ativo = cotacaoRequest.MaterialCotacao[indice].Ativo;
             return materialCotacao;
         }
 
