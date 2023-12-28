@@ -102,25 +102,5 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
            
         }
 
-        public static bool Between(DateTime input, DateTime date1, DateTime date2)
-        {
-            bool retorno = false;
-
-            if (input >= date1)
-            {
-                retorno = true;
-            }
-            else if (input <= date2)
-            {
-                retorno = true;
-            }
-            else
-            {
-                retorno = false;
-            }
-
-            return retorno;
-        }
-
     }
 }

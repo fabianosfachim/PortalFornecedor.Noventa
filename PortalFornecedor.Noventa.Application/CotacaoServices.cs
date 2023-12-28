@@ -880,6 +880,7 @@ namespace PortalFornecedor.Noventa.Application
             bool retornoPeriodo = true;
             bool controleStatus = false;
             bool controleMotivo = false;
+            bool filtroData = false;
 
             try
             {
@@ -903,6 +904,7 @@ namespace PortalFornecedor.Noventa.Application
                     retornoPeriodo = true;
                     controleStatus = false;
                     controleMotivo = false;
+                    filtroData = false;
 
                     var dadosSolicitante = await _cotacaoDadosSolicitanteServices.ListarDadosSolicitanteAsync(item.IdCotacao);
 
@@ -911,6 +913,20 @@ namespace PortalFornecedor.Noventa.Application
                     DateTime dataSolicitacao = dadosSolicitante.Data.solicitante.DataSolicitacao.Value;
                     DateTime dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
 
+                    if (cotacaoDetalheFiltroRequest.dataInicio != null && cotacaoDetalheFiltroRequest.dataTermino != null)
+                    {
+                        if ((DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")) >= (DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd"))))
+                        && (DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")) <= (DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")))))
+                        {
+                            filtroData = true;
+                        }
+
+                        if(filtroData == false) 
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var DadosMotivo = _motivoServices.ListarMotivoAsync(item.Motivo_Id).Result;
                     string motivo = DadosMotivo.Data.MotivoDados.NomeMotivo;
                     string contato = dadosSolicitante.Data.solicitante.Telefone;
@@ -962,22 +978,6 @@ namespace PortalFornecedor.Noventa.Application
                         if (controleMotivo == false)
                         {
                             retornoMotivo = false;
-                        }
-                    }
-
-                    if (cotacaoDetalheFiltroRequest.dataInicio != null && cotacaoDetalheFiltroRequest.dataTermino != null)
-                    {
-                        bool retornoData = Utils.Between(DateTime.Parse(dataSolicitacao.ToString("yyyy-MM-dd")), 
-                                                  DateTime.Parse(cotacaoDetalheFiltroRequest.dataInicio.Value.ToString("yyyy-MM-dd")), 
-                                                  DateTime.Parse(cotacaoDetalheFiltroRequest.dataTermino.Value.ToString("yyyy-MM-dd")));
-
-                        if (retornoData == true)
-                        {
-                            retornoPeriodo = true;
-                        }
-                        else
-                        {
-                            retornoPeriodo = false;
                         }
                     }
 
