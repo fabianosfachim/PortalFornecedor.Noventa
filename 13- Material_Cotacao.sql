@@ -23,7 +23,7 @@ CREATE TABLE [dbo].[material_cotacao](
 	[ValorIpi] [decimal](19, 2) NULL,
 	[PercentualIcms] [decimal](19, 2) NULL,
 	[PrazoEntrega] [int] NULL,
-	[Marca] [varchar](100) NULL,
+	[Marca] [varchar](30) NULL,
 	[SubTotal] [decimal](19, 2) NULL,
 	[Ativo] [bit] NOT NULL,
  CONSTRAINT [PK_material_cotacao_1] PRIMARY KEY CLUSTERED 
