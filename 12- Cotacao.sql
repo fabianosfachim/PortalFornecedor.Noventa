@@ -26,7 +26,7 @@ CREATE TABLE [dbo].[cotacao](
 	[ValorFreteForaNota] [decimal](19, 2) NULL,
 	[ValorSeguro] [decimal](19, 2) NULL,
 	[ValorDesconto] [decimal](19, 2) NULL,
-	[Observacao] [varchar](max) NULL,
+	[Observacao] [varchar](255) NULL,
 	[PrazoMaximoCotacao] [datetime] NULL,
 	[DataEntregaDesejavel] [datetime] NULL,
     [NomeUsuarioCadastro] [varchar](50) NOT NULL,
