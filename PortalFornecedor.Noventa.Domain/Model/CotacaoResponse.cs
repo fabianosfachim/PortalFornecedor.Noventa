@@ -17,6 +17,7 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public CotacaoDetalhe cotacao { get; set; }
         public ResumoCotacao resumoCotacao { get; set; }
         public List<Material_Cotacao> material { get; set; }
+        public List<ItensIndisponiveis>? itensIndisponivel { get; set; }
     }
 
     public class CotacaoDetalhe
@@ -60,6 +61,11 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public decimal ValorDesconto { get; set;}
         public string formaPagamento { get; set; }
         public decimal valorFinalCotacao { get; set; }
+    }
+
+    public class ItensIndisponiveis
+    {
+        public string itemIndisponivel { get; set; }
     }
 
 }

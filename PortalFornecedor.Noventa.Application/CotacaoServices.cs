@@ -450,6 +450,7 @@ namespace PortalFornecedor.Noventa.Application
             decimal subTotalItens = 0;
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            List<ItensIndisponiveis>? itensIndisponiveis = new List<ItensIndisponiveis>();
 
             try
             {
@@ -487,6 +488,15 @@ namespace PortalFornecedor.Noventa.Application
                         {
                             subTotalItens = subTotalItens + item.SubTotal.Value;
                         }
+
+                        if (item.Ativo == false)
+                        {
+                            ItensIndisponiveis itens = new ItensIndisponiveis();
+
+                            itens.itemIndisponivel = item.Descricao;
+                            itensIndisponiveis.Add(itens);
+                        }
+
                         materialCotacaoList.Add(item);
                     }
                 }
@@ -496,6 +506,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault());
                 cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
+                cotacaoResponse.listarDadosCotacao.itensIndisponivel = itensIndisponiveis;
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
 
@@ -586,6 +597,7 @@ namespace PortalFornecedor.Noventa.Application
             decimal subTotalItens = 0;
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            List<ItensIndisponiveis>? itensIndisponiveis = new List<ItensIndisponiveis>();
 
             try
             {
@@ -614,6 +626,15 @@ namespace PortalFornecedor.Noventa.Application
                         {
                             subTotalItens = subTotalItens + item.SubTotal.Value;
                         }
+                        
+                        if(item.Ativo == false) 
+                        {
+                            ItensIndisponiveis itens = new ItensIndisponiveis();
+
+                            itens.itemIndisponivel = item.Descricao;
+                            itensIndisponiveis.Add(itens);
+                        }
+
                         materialCotacaoList.Add(item);
                     }
                 }
@@ -623,6 +644,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault()); 
                 cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
+                cotacaoResponse.listarDadosCotacao.itensIndisponivel = itensIndisponiveis;
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
 
@@ -708,13 +730,13 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<CotacaoResponse>(cotacaoResponse, $"ListarCotacao.");
         }
 
-
         public async Task<Response<CotacaoResponse>> ListarCotacaoAsync(Guid guid)
         {
             int idFornecedor = 0;
             decimal subTotalItens = 0;
             CotacaoResponse cotacaoResponse = new CotacaoResponse();
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
+            List<ItensIndisponiveis>? itensIndisponiveis = new List<ItensIndisponiveis>();
 
             try
             {
@@ -743,6 +765,15 @@ namespace PortalFornecedor.Noventa.Application
                         {
                             subTotalItens = subTotalItens + item.SubTotal.Value;
                         }
+
+                        if (item.Ativo == false)
+                        {
+                            ItensIndisponiveis itens = new ItensIndisponiveis();
+
+                            itens.itemIndisponivel = item.Descricao;
+                            itensIndisponiveis.Add(itens);
+                        }
+
                         materialCotacaoList.Add(item);
                     }
                 }
@@ -752,6 +783,7 @@ namespace PortalFornecedor.Noventa.Application
 
                 cotacaoResponse.listarDadosCotacao.cotacao = PreencherDados(cotacao.FirstOrDefault());
                 cotacaoResponse.listarDadosCotacao.material = materialCotacaoList;
+                cotacaoResponse.listarDadosCotacao.itensIndisponivel = itensIndisponiveis;
 
                 cotacaoResponse.listarDadosCotacao.resumoCotacao = new ResumoCotacao();
 
