@@ -17,7 +17,7 @@ CREATE TABLE [dbo].[cotacao](
 	[IdCotacao] [varchar](40) NOT NULL,
 	[Motivo_Id] [int] NOT NULL,
 	[CotacaoStatus_Id] [int] NOT NULL,
-	[Vendedor] [varchar](150) NULL,
+	[Vendedor] [varchar](30) NULL,
 	[DataPostagem] [datetime] NULL,
 	[CondicoesPagamento_Id] [int]  NULL,
 	[Frete_Id] [int]  NULL,
