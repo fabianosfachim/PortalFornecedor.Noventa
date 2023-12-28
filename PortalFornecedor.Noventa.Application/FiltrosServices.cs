@@ -179,7 +179,8 @@ namespace PortalFornecedor.Noventa.Application
                                     objListaAtividadesRecentesDashBoard.dataEntrega = dadosSolicitante.Data.solicitante.DataEntrega.Value;
                                     objListaAtividadesRecentesDashBoard.acao = "Cotação " + DadosStatus.Data.statusDashBoard.NomeStatus;
                                     objListaAtividadesRecentesDashBoard.DataSolicitacao = DadosStatus.Data.statusDashBoard.DataStatus;
-                                    
+                                    objListaAtividadesRecentesDashBoard.DataStatus = DadosStatus.Data.statusDashBoard.DataStatus;
+
                                     listaAtividadesRecentesDashBoard.Add(objListaAtividadesRecentesDashBoard);
                                 }
                             }
@@ -208,6 +209,7 @@ namespace PortalFornecedor.Noventa.Application
                     dashBoardResponse.CotacoesRecentesPageCount = listaAtividadesRecentesDashBoard.Count;
 
                     dashBoardResponse.listaAtividadesRecentesDashBoards = listaAtividadesRecentesDashBoard
+                         .OrderByDescending(cot => cot.DataStatus)
                         .Skip((pageLimit * currentPage) - pageLimit)
                         .Take(pageLimit)
                         .ToList();
