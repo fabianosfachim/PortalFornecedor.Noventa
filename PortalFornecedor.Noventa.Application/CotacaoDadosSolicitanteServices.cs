@@ -56,6 +56,7 @@ namespace PortalFornecedor.Noventa.Application
                 _Solicitante.Estado = cotacaoDadosSolicitanteRequest.Estado;
                 _Solicitante.Contato = cotacaoDadosSolicitanteRequest.Contato;
                 _Solicitante.Email = cotacaoDadosSolicitanteRequest.Email;
+                _Solicitante.Telefone = cotacaoDadosSolicitanteRequest.Telefone;
 
                 await _cotacaoDadosSolicitanteRepository.AddAsync(_Solicitante);
 
