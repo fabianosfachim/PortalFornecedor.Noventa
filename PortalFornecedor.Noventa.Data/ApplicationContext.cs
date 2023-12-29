@@ -19,9 +19,7 @@ namespace PortalFornecedor.Noventa.Data
         public DbSet<Login> Login { get; set; }
         public DbSet<Fornecedor> Fornecedor { get; set; }
         public DbSet<Status> Status { get; set; }
-        public DbSet<Motivo> Motivo { get; set; }
         public DbSet<Cotacao_Status> Cotacao_Status { get; set; }
-        public DbSet<Cotacao_Motivo> Cotacao_Motivo { get; set; }
         public DbSet<Cotacao_Dados_Solicitante> Cotacao_Dados_Solicitante { get; set; }
         public DbSet<Condicao_Pagamento> Condicao_Pagamento { get; set; }
         public DbSet<Frete> Frete { get; set; }

@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using PortalFornecedor.Noventa.Application.Services.Interfaces;
+using PortalFornecedor.Noventa.Application.Services.Util;
 using PortalFornecedor.Noventa.Application.Services.Wrappers;
 using PortalFornecedor.Noventa.Data.Interfaces;
 using PortalFornecedor.Noventa.Domain.Entities;
 using PortalFornecedor.Noventa.Domain.Model;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace PortalFornecedor.Noventa.Application
 {
@@ -12,27 +16,27 @@ namespace PortalFornecedor.Noventa.Application
     {
         private readonly ILogger<FiltrosServices> _logger;
         private readonly IStatusRepository _statusRepository;
-        private readonly IMotivoRepository _motivoRepository;
         private readonly ICotacaoRepository _cotacaoRepository;
         private readonly IMaterialCotacaoRepository _materialCotacaoRepository;
         private readonly ICotacaoDadosSolicitanteServices _cotacaoDadosSolicitanteServices;
         private readonly ICotacaoStatusServices _cotacaoStatusServices;
+        private readonly IConfiguration _configuration;
 
         public FiltrosServices(ILogger<FiltrosServices> logger,
                               IStatusRepository statusRepository,
-                              IMotivoRepository motivoRepository,
                               ICotacaoRepository cotacaoRepository,
                               IMaterialCotacaoRepository materialCotacaoRepository,
                               ICotacaoDadosSolicitanteServices cotacaoDadosSolicitanteServices,
-                              ICotacaoStatusServices cotacaoStatusServices)
+                              ICotacaoStatusServices cotacaoStatusServices,
+                              IConfiguration configuration)
         {
             _logger = logger;
             _statusRepository = statusRepository;
-            _motivoRepository = motivoRepository;
             _cotacaoRepository = cotacaoRepository;
             _materialCotacaoRepository = materialCotacaoRepository;
             _cotacaoDadosSolicitanteServices = cotacaoDadosSolicitanteServices;
             _cotacaoStatusServices = cotacaoStatusServices;
+            _configuration = configuration;
         }
 
         public async Task<Response<StatusResponse>> ListarStatusAsync()
@@ -66,36 +70,6 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<StatusResponse>(statusResponse, $"Lista Status.");
         }
 
-        public async Task<Response<MotivoResponse>> ListarMotivoAsync()
-        {
-            MotivoResponse motivoResponse = new MotivoResponse();
-
-            try
-            {
-                _logger.LogInformation("Iniciando o método   " +
-                    $"{nameof(ListarMotivoAsync)}   ");
-
-
-                var motivo = await _motivoRepository.GetAllAsync();
-                motivoResponse.Motivo = motivo.ToList();
-                motivoResponse.Executado = true;
-                motivoResponse.MensagemRetorno = "Consulta efetuada com sucesso";
-
-                _logger.LogInformation("Finalizando o método   " +
-                    $"{nameof(ListarMotivoAsync)}   ");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Erro na execução do método " +
-                    $"{nameof(ListarMotivoAsync)}   " +
-                    " Com o erro = " + ex.Message);
-
-                motivoResponse.Executado = false;
-                motivoResponse.MensagemRetorno = "Erro na consulta de lista de motivos";
-            }
-
-            return new Response<MotivoResponse>(motivoResponse, $"Lista Motivo.");
-        }
 
         public async Task<Response<DashBoardResponse>> ListarDadosDashBoardAsync(int idFornecedor, int idData, int peddingPage, int currentPage)
         {
@@ -127,14 +101,14 @@ namespace PortalFornecedor.Noventa.Application
 
                             if (DadosStatus != null)
                             {
-                                if ((ValidarData(DateTime.Parse(dadosSolicitante.Data.solicitante.DataSolicitacao.Value.ToString("yyyy-MM-dd")), idData) == false) && DadosStatus.Data.statusDashBoard.Id == 1)
+                                if ((ValidarData(idData,item.Id) == false) && DadosStatus.Data.statusDashBoard.Id == 1)
                                 {
                                     continue;
                                 }
                                
                                 if(DadosStatus.Data.statusDashBoard.Id == 2)
                                 {
-                                    if ((ValidarData(DateTime.Parse(DadosStatus.Data.statusDashBoard.DataStatus.ToString("yyyy-MM-dd")), idData) == false))
+                                    if ((ValidarData(idData,item.Id) == false))
                                     {
                                         continue;
                                     }
@@ -233,58 +207,65 @@ namespace PortalFornecedor.Noventa.Application
             return new Response<DashBoardResponse>(dashBoardResponse, $"Lista dados do Dashboard.");
         }
 
-        private bool ValidarData(DateTime dataSolicitacao, int idData)
+        private bool ValidarData(int idData, int id)
         {
             bool retorno = true;
             DateTime dataAtual = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
 
             if ((int)DashBoardRequest.Data.UltimaSemana == idData)
             {
-                 retorno = Between(dataSolicitacao, dataAtual.AddDays(-7), dataAtual);
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-7), dataAtual); 
             }
             else if ((int)DashBoardRequest.Data.UltimaQuinzena == idData)
             {
-                retorno = Between(dataSolicitacao, dataAtual.AddDays(-15), dataAtual);
-
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-15), dataAtual);
             }
             if ((int)DashBoardRequest.Data.UltimaMensal == idData)
             {
-                retorno = Between(dataSolicitacao, dataAtual.AddDays(-30), dataAtual);
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-30), dataAtual);
             }
             if ((int)DashBoardRequest.Data.UltimoTrimeste == idData)
             {
-                retorno = Between(dataSolicitacao, dataAtual.AddDays(-90), dataAtual);
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-90), dataAtual);
             }
             if ((int)DashBoardRequest.Data.UltimoSemestre == idData)
             {
-                retorno = Between(dataSolicitacao, dataAtual.AddDays(-180), dataAtual);
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-180), dataAtual);
             }
             if ((int)DashBoardRequest.Data.UltimoAno == idData)
             {
-                retorno = Between(dataSolicitacao, dataAtual.AddDays(-365), dataAtual);
+                retorno = verificarDataSolicitacao(id, dataAtual.AddDays(-365), dataAtual);
             }
 
             return retorno;
         }
 
-        private static bool Between(DateTime input, DateTime date1, DateTime date2)
+        private bool verificarDataSolicitacao(int id, DateTime dataInicio, DateTime dataFinal)
         {
-            bool retorno = true;
+            try
+            {
+                var connectionString = _configuration.GetConnectionString("SqlConnection");
+                string strSql = $"SELECT * FROM cotacao_dados_solicitante WHERE DataSolicitacao BETWEEN '{dataInicio.ToString("yyyy-MM-dd")} 00:00' and '{dataFinal.ToString("yyyy-MM-dd")} 23:59' AND id = {id}";
 
-            if (date1 > input)
-            {
-                retorno = false;
-            }
-            else if (input <= date2)
-            {
-                retorno = true;
-            }
-            else
-            {
-                retorno = false;
-            }
+                SqlCommand cmd = new SqlCommand(strSql);
+                cmd.CommandType = CommandType.Text;
 
-            return retorno;
+                var retorno = Utils.GetDados(cmd, connectionString);
+
+                if (retorno.Rows.Count > 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro na execução do método " +
+               $"{nameof(verificarDataSolicitacao)}   " +
+               " Com o erro = " + ex.Message);
+                throw;
+            }
         }
     }
 }

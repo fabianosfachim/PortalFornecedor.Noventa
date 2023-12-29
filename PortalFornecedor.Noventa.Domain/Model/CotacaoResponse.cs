@@ -26,8 +26,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public int Fornecedor_Id { get; set; }
         public string NomeFornecedor { get; set; }
         public string IdCotacao { get; set; }
-        public int Motivo_Id { get; set; }
-        public string NomeMotivo { get; set; }
         public int CotacaoStatus_Id { get; set; }
         public string NomeStatus { get; set; }
         public string? Vendedor { get; set; }

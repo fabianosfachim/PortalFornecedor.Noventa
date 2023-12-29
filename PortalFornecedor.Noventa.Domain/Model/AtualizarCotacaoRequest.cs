@@ -8,7 +8,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public int Id { get; set; }
         public int Fornecedor_Id { get; set; }
         public string ERPCotacao_Id { get; set; }
-        public int Motivo_Id { get; set; }
         public int CotacaoStatus_Id { get; set; }
         public string? Vendedor { get; set; }
         public DateTime? DataPostagem { get; set; }
