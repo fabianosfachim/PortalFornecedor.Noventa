@@ -130,5 +130,6 @@ namespace PortalFornecedor.Noventa.Application.Services.Util
                 con.Dispose();
             }
         }
+
     }
 }

@@ -35,16 +35,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tabelas", "Tabelas", "{DD02
 		02-Login.sql = 02-Login.sql
 		03 - Fornecedor.sql = 03 - Fornecedor.sql
 		04 - Status.sql = 04 - Status.sql
-		05 - Motivo.sql = 05 - Motivo.sql
-		06 - Frete.sql = 06 - Frete.sql
-		07 - Condicao_Pagamento.sql = 07 - Condicao_Pagamento.sql
-		08- Cotacao_Status.sql = 08- Cotacao_Status.sql
-		09 - Cotacao_Motivo.sql = 09 - Cotacao_Motivo.sql
-		10- Cotacao_Status_Pagamento.sql = 10- Cotacao_Status_Pagamento.sql
-		11 - Cotacao_Dados_Solicitante.sql = 11 - Cotacao_Dados_Solicitante.sql
-		12- Cotacao.sql = 12- Cotacao.sql
-		13- Material_Cotacao.sql = 13- Material_Cotacao.sql
-		14- Recuperar_Dados_Acesso.sql = 14- Recuperar_Dados_Acesso.sql
+		05 - Frete.sql = 05 - Frete.sql
+		06 - Condicao_Pagamento.sql = 06 - Condicao_Pagamento.sql
+		07- Cotacao_Status.sql = 07- Cotacao_Status.sql
+		08- Cotacao_Status_Pagamento.sql = 08- Cotacao_Status_Pagamento.sql
+		09 - Cotacao_Dados_Solicitante.sql = 09 - Cotacao_Dados_Solicitante.sql
+		10- Cotacao.sql = 10- Cotacao.sql
+		11- Material_Cotacao.sql = 11- Material_Cotacao.sql
+		12- Recuperar_Dados_Acesso.sql = 12- Recuperar_Dados_Acesso.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoredProcedure", "StoredProcedure", "{E1837766-BEAE-4819-A29A-D4F7B659E31C}"

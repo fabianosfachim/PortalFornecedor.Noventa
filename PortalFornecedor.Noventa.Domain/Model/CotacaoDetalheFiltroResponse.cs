@@ -17,9 +17,9 @@ namespace PortalFornecedor.Noventa.Domain.Model
         public string localDestino { get; set; }
         public DateTime dataSolicitacao { get; set; }
         public DateTime dataEntrega { get; set; }
-        public string motivo { get; set; }
         public string contato { get; set; }
         public string status { get; set; }
+        public DateTime PrazoMaximoCotacao { get; set; }
     }
 }
 

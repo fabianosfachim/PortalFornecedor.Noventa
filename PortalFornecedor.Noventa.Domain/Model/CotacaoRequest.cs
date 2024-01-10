@@ -6,7 +6,6 @@ namespace PortalFornecedor.Noventa.Domain.Model
     {
         public string ERPCotacao_Id { get; set; }
         public string CotacaoStatusDescricao { get; set; }
-        public string motivo { get; set; }
         public string CNPJ { get; set; }
         public CotacaoDadosSolicitanteRequest cotacaoDadosSolicitante { get; set; }
         public string? Vendedor { get; set; }

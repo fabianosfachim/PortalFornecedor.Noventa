@@ -15,7 +15,6 @@ CREATE TABLE [dbo].[cotacao](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Fornecedor_Id] [int] NOT NULL,
 	[IdCotacao] [varchar](40) NOT NULL,
-	[Motivo_Id] [int] NOT NULL,
 	[CotacaoStatus_Id] [int] NOT NULL,
 	[Vendedor] [varchar](30) NULL,
 	[DataPostagem] [datetime] NULL,
@@ -41,12 +40,6 @@ CREATE TABLE [dbo].[cotacao](
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[cotacao]  WITH CHECK ADD  CONSTRAINT [FK_tb_cotacao_cotacaostatus] FOREIGN KEY([CotacaoStatus_Id])
-REFERENCES [dbo].[cotacao_status] ([Id])
-GO
-
-ALTER TABLE [dbo].[cotacao] CHECK CONSTRAINT [FK_tb_cotacao_cotacaostatus]
-GO
 
 ALTER TABLE [dbo].[cotacao]  WITH CHECK ADD  CONSTRAINT [FK_tb_cotacao_fornecedor] FOREIGN KEY([Fornecedor_Id])
 REFERENCES [dbo].[fornecedor] ([Id])
@@ -55,11 +48,7 @@ GO
 ALTER TABLE [dbo].[cotacao] CHECK CONSTRAINT [FK_tb_cotacao_fornecedor]
 GO
 
-ALTER TABLE [dbo].[cotacao]  WITH CHECK ADD  CONSTRAINT [FK_tb_cotacao_motivo] FOREIGN KEY([Motivo_Id])
-REFERENCES [dbo].[cotacao_motivo] ([Id])
+
+ALTER TABLE [dbo].[cotacao]  WITH CHECK ADD  CONSTRAINT [FK_tb_cotacao_cotacaostatus] FOREIGN KEY([CotacaoStatus_Id])
+REFERENCES [dbo].[cotacao_status] ([Id])
 GO
-
-ALTER TABLE [dbo].[cotacao] CHECK CONSTRAINT [FK_tb_cotacao_motivo]
-GO
-
-

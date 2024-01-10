@@ -34,23 +34,6 @@ namespace PortalFornecedor.Noventa.API.Controllers
         }
 
         /// <summary>
-        /// Listar o motivo das cotações
-        /// </summary>
-        /// <returns>Retornar o motivo da cotaçao</returns>
-        [HttpGet]
-        [Route("ListarMotivo")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ListarMotivoAsync()
-        {
-
-            var response = await _filtrosServices.ListarMotivoAsync();
-
-            HttpContext.Response.ContentType = "application/json";
-
-            return Ok(response);
-        }
-
-        /// <summary>
         /// Listar os dados do DashBoard
         /// </summary>
         /// <returns>Retornar o motivo da cotaçao</returns>
