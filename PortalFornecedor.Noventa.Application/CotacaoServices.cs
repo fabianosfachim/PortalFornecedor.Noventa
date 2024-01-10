@@ -57,9 +57,9 @@ namespace PortalFornecedor.Noventa.Application
             int idFornecedor = 0;
             int idStatus = 0;
             int idStatusCotacao = 0;
-            int idMotivo = 0;
             int idCotacaoDadosSolicitante = 0;
             int i = 0;
+            int id = 0;
             List<Material_Cotacao> materialCotacaoList = new List<Material_Cotacao>();
             Cotacao dadosCotacao =  new Cotacao();
 
@@ -108,7 +108,7 @@ namespace PortalFornecedor.Noventa.Application
                         cotacaoResponse.Executado = false;
                         cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação pois não existe o status da cotação cadastrado no banco de dados!";
 
-                        RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
+                        RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id, null);
 
                         _logger.LogError("Erro na execução do método " +
                          $"{nameof(AdicionarCotacaoAsync)}   " +
@@ -130,7 +130,7 @@ namespace PortalFornecedor.Noventa.Application
                 {
                     cotacaoResponse.Executado = false;
                     cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação pois os dados do solicitante não foram cadastrado no banco de dados!";
-                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
+                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id, null);
 
                     _logger.LogError("Erro na execução do método " +
                      $"{nameof(AdicionarCotacaoAsync)}   " +
@@ -145,7 +145,7 @@ namespace PortalFornecedor.Noventa.Application
                 {
                     cotacaoResponse.Executado = false;
                     cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação pois as condições de pagamento não foram cadastrado no banco de dados!";
-                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
+                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id, null);
 
                     _logger.LogError("Erro na execução do método " +
                      $"{nameof(AdicionarCotacaoAsync)}   " +
@@ -160,7 +160,7 @@ namespace PortalFornecedor.Noventa.Application
                 {
                     cotacaoResponse.Executado = false;
                     cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação pois o frete não foi cadastrado no banco de dados!";
-                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
+                    RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id, null);
 
                     _logger.LogError("Erro na execução do método " +
                      $"{nameof(AdicionarCotacaoAsync)}   " +
@@ -181,7 +181,7 @@ namespace PortalFornecedor.Noventa.Application
                 if (!idCotacao.Any())
                 {
                     var cotacao = await _cotacaoRepository.AddAsync(dadosCotacao);
-                    var id = dadosCotacao.Id;
+                    id = dadosCotacao.Id;
 
                     _logger.LogInformation("Acionando a cotação no banco de dados   " +
                     $"{nameof(AdicionarCotacaoAsync)}   " +
@@ -225,7 +225,7 @@ namespace PortalFornecedor.Noventa.Application
                   $"{nameof(AdicionarCotacaoAsync)}   " +
                   " Com o erro = " + ex.Message);
 
-                RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id);
+                RemoverDadosCotacao(cotacaoRequest.ERPCotacao_Id, id);
                 cotacaoResponse.Executado = false;
                 cotacaoResponse.MensagemRetorno = "Não foi possível realizar o cadastro de cotação!";
             }
@@ -1333,12 +1333,16 @@ namespace PortalFornecedor.Noventa.Application
             _cotacaoStatusServices.AtualizarCotacaoStatusAsync(cotacao_Status);
         }
 
-        private void RemoverDadosCotacao(string IdCotacao)
+        private void RemoverDadosCotacao(string IdCotacao, int? id)
         {
             RemoverStatusCotacao(IdCotacao);
             RemoverCotacaoDadosSolicitante(IdCotacao);
             RemoverCotacaoCondicaoPagamento(IdCotacao);
             RemoverCotacaoFrete(IdCotacao);
+            if(id > 0)
+            {
+                RemoverCotacao(id.Value);
+            }
         }
         private async Task<int> ListarIdCotacaoDadosSolicitanteAsync(CotacaoDadosSolicitanteRequest cotacaoDadosSolicitanteRequest, string IdCotacao)
         {
@@ -1458,6 +1462,11 @@ namespace PortalFornecedor.Noventa.Application
                     }
                 }
             }
+        }
+
+        private async void RemoverCotacao(int idCotacao)
+        {
+           await  _cotacaoRepository.RemoveAsync(idCotacao);
         }
 
         private string WriteMessageNovaCotacao()
